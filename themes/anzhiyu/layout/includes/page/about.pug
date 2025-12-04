@@ -89,7 +89,7 @@ if site.data.about
               img.author-content-img.no-lightbox(alt=careers.tips, src=url_for(careers.img) onerror=`this.onerror=null;this.src='` + url_for(theme.error_img.flink) + `'`)
       
       .author-content
-        if theme.LA.enable
+        if theme.LA.enable || theme.umami.enable
           - let cover = item.statistic.cover
           .about-statistic.author-content-item(style=`background: url(${cover}) top / cover no-repeat;`)
             .card-content
@@ -98,7 +98,10 @@ if site.data.about
               #statistic
               .post-tips
                 | 统计信息来自 
-                a(href='https://invite.51.la/1NzKqTeb?target=V6', target='_blank', rel='noopener nofollow') 51la网站统计
+                if(theme.umami.enable)
+                  a(href='https://cloud.umami.is/analytics/us/websites', target='_blank', rel='noopener nofollow') umami 统计工具
+                else if(theme.LA.enable)
+                  a(href='https://invite.51.la/1NzKqTeb?target=V6', target='_blank', rel='noopener nofollow') 51la 网站统计
               .banner-button-group
                 - let link = item.statistic.link
                 - let text = item.statistic.text
@@ -171,16 +174,22 @@ if site.data.about
           .card-background-icon
             i.anzhiyufont.anzhiyu-icon-dice-d20
 
+      //- 添加描述 - 原神
       .author-content
-        - let {game_tips, game_title, game_uid, game_bg} = item.game
+        - let {game_tips, game_title, game_txt, game_uid, game_bg} = item.game
         .author-content-item.game-yuanshen(style=`background: url(${game_bg}) top / cover no-repeat;`)
           .card-content
             .author-content-item-tips=game_tips
             span.author-content-item-title=game_title
+            
+            if game_txt
+              .game-txt=game_txt
+            
             .content-bottom
               .icon-group
                 .loading-bar(role='presentation', aria-hidden='true' style=`${game_title != "原神" ? "display: none": ""}`)
               .tips.game-yuanshen-uid=game_uid
+
         .author-content-item.comic-content
           .card-content
             - let {comic_tips, comic_title, comic_list} = item.comic
@@ -192,9 +201,10 @@ if site.data.about
                   a.comic-item(href=i.href, target="_blank", title=i.name)
                     .comic-item-cover
                       img(src=i.cover, alt=i.name)
-      
+
+      //- 暂用 音乐/科技 展示游戏
       .author-content
-        - let {music_tips, music_title, music_link, music_bg} = item.music
+        - let {music_tips, music_title, music_bottom, music_bg} = item.music
         - let {like_tips, like_title, like_bottom, like_bg} = item.like
         .author-content-item.like-technology(style=`background: url(${like_bg}) top / cover no-repeat;`)
           .card-content
@@ -207,12 +217,7 @@ if site.data.about
             .author-content-item-tips=music_tips
             span.author-content-item-title=music_title
             .content-bottom
-              .tips=`跟 ${aboutName} 一起欣赏更多音乐`
-            .banner-button-group
-              a.banner-button(onclick=`pjax.loadUrl("${music_link}")`)
-                i.anzhiyufont.anzhiyu-icon-arrow-circle-right
-                |  
-                span.banner-button-text 更多推荐
+              .tips=music_bottom
 
       if page.content
         .author-content

@@ -9,7 +9,7 @@ tags:
 categories: 折腾笔记
 cover: https://cdn.amiracle.site/%E7%BB%B4%E9%87%8C%E5%A5%88.png
 date: 2025-11-29 22:01:47
-update: 2025-12-03 02:00:00
+updated: 2025-12-03 02:00:00
 ---
 
 # 前言
@@ -304,6 +304,32 @@ async function getAll(){
 ( 严格来说其实下面是 pug 代码，因为 highlight 不支持 pug，我搞了半天也没搞懂怎么弄，只能暂用 js 标签了 TAT )
 
 ```javascript
+.author-content
+  if theme.LA.enable || theme.umami.enable // +
+    - let cover = item.statistic.cover
+    .about-statistic.author-content-item(style=`background: url(${cover}) top / cover no-repeat;`)
+      .card-content
+        .author-content-item-tips 数据
+        span.author-content-item-title 访问统计
+        #statistic
+        .post-tips
+          | 统计信息来自 
+// ++
+          if(theme.umami.enable)
+            a(href='https://cloud.umami.is/analytics/us/websites', target='_blank', rel='noopener nofollow') umami 统计工具
+          else if(theme.LA.enable)
+            a(href='https://invite.51.la/1NzKqTeb?target=V6', target='_blank', rel='noopener nofollow') 51la 网站统计
+// ++
+        .banner-button-group
+          - let link = item.statistic.link
+          - let text = item.statistic.text
+          a.banner-button(onclick=`pjax.loadUrl("${link}")`)
+            i.anzhiyufont.anzhiyu-icon-arrow-circle-right
+            |  
+            span.banner-button-text=text
+
+// ... 无关代码省略 ... //
+
 script(defer).
   function initAboutPage() {
     // LA 部分
