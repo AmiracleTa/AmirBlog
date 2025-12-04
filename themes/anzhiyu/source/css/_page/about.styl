@@ -697,7 +697,7 @@ body[data-type='about'] #web_bg {
 }
 
 .author-content-item.like-music {
-  min-height: 400px;
+  min-height: 350px;
   color: var(--anzhiyu-white);
   overflow: hidden;
 }
@@ -1254,7 +1254,11 @@ body[data-type='about'] #web_bg {
 
 if (hexo-config('LA.enable')) {
   body: 1;
-} else {
+} 
+else if (hexo-config('umami.enable')) {
+  body: 1;
+}
+else {
   #about-page {
     .author-content-item-group.column.mapAndInfo {
       width: 100%;
@@ -1273,4 +1277,20 @@ if (hexo-config('LA.enable')) {
       width: 49%;
     }
   }
+}
+
+// 原神字体
+.game-txt
+  position absolute
+  left 10px
+  bottom 10px
+  font-family "KaiTi"
+
+// 爱好游戏
+.author-content-item.like-technology .tips,
+.author-content-item.like-music .tips {
+  position absolute
+  left 10px
+  bottom 10px
+  font-family "KaiTi"
 }

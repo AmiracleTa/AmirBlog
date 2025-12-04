@@ -1,0 +1,167 @@
+- class_name: 关于页
+  subtitle: 生活明朗，万物可爱✨
+  # avatarImg: https://npm.elemecdn.com/anzhiyu-blog-static@1.0.0/img/avatar.webp
+  avatarImg: https://cdn.amiracle.site/sm_avatar(1).jpg
+  avatarSkills:
+    left:
+      - 🤖️ 数码科技爱好者
+      - 🔍 分享与热心帮助
+      - 🏠 智能家居小能手
+      - 🔨 设计开发一条龙
+    right:
+      - 专修交互与设计 🤝
+      - 脚踏实地行动派 🏃
+      - 团队小组发动机 🧱
+      - 壮汉人狠话不多 💢
+  name: Amiracle
+  description: 是一名 学生、博主、ACMer
+  # 努力成为 独立开发者
+
+  aboutsiteTips:
+    tips: 追求
+    title1: 源于
+    title2: 热爱而去 感受
+    word:
+      - 学习
+      - 生活
+      # - 程序
+      - 算法
+      - 体验
+  helloAbout: Hello there!
+  skillsTips:
+    tips: 技能
+    title: 开启创造力
+  careers:
+    tips: 生涯
+    title: 無限進步
+    list:
+      - desc: Hangzhou City University, Computer Science
+        color: "#357ef5"
+      - desc: Bilibili University
+        color: "#00A1D6"
+    # img: https://bu.dusays.com/2023/04/21/644287166329b.png
+    img: https://cdn.amiracle.site/careers.png
+  statistic:
+    link: /archives
+    text: 文章隧道
+    cover: https://bu.dusays.com/2023/05/01/644f4b037b930.jpg
+  map:
+    title: 我现在住在
+    StrengthenTitle: 中国，杭州市
+    background: https://cdn.amiracle.site/map.png
+    backgroundDark: https://cdn.amiracle.site/map.png
+  selfInfo:
+    selfInfoTips1: 生于
+    selfInfoContentYear: 2005
+    selfInfoTips2: 浙大城市学院
+    selfInfoContent2: 计算机科学
+    selfInfoTips3: 现在职业
+    selfInfoContent3: 大二学生👨‍🎓
+  personalities:
+    author_name: Idealist
+    personality_type: INFP-A
+    # photo_url: https://bu.dusays.com/2023/07/05/64a4c63495ac5.jpg
+    # photo_url: https://cdn.jsdelivr.net/gh/AmiracleTa/pic-bed/img/%E7%8C%AB%E8%80%B3%E5%B0%91%E5%A5%B3%E3%81%A8%E5%A4%9C%E3%81%AE%E8%A1%97.png
+    photo_url: https://cdn.amiracle.site/%E7%8C%AB%E8%80%B3%E5%B0%91%E5%A5%B3%E3%81%A8%E5%A4%9C%E3%81%AE%E8%A1%97_compressed.png
+    personality_img: https://cdn.amiracle.site/INFP.svg
+    name_url: https://www.16personalities.com/ch/infp-%E4%BA%BA%E6%A0%BC
+  maxim:
+    maxim_tips: 座右铭
+    maxim_top: 向往之处，
+    maxim_bottom: 便是归途。
+    # maxim_top: 生活明朗，
+    # maxim_bottom: 万物可爱。
+  buff:
+    buff_tips: 特长
+    # buff_top: 脑回路新奇的 酸菜鱼
+    buff_top: 在役ACMer 是个菜鸡
+    buff_bottom: 二次元指数 MAX
+  comic:
+    comic_tips: 爱好番剧
+    comic_title: 追番
+    comic_list:
+      - name: 中二病也要谈恋爱!
+        href: https://www.bilibili.com/bangumi/media/md4340
+        cover: https://cdn.amiracle.site/%E4%B8%B9%E7%94%9F%E8%B0%B7.jpg
+      - name: 中二病也要谈恋爱!
+        href: https://www.bilibili.com/bangumi/media/md4340
+        cover: https://cdn.amiracle.site/%E5%85%AD%E8%8A%B13(1).png
+      - name: 中二病也要谈恋爱!
+        href: https://www.bilibili.com/bangumi/media/md4340
+        cover: https://cdn.amiracle.site/DarkFlamMst(1).png
+      - name: 中二病也要谈恋爱!
+        href: https://www.bilibili.com/bangumi/media/md4340
+        cover: https://cdn.amiracle.site/%E5%85%AD%E8%8A%B12(1).jpg
+      - name: 中二病也要谈恋爱!
+        href: https://www.bilibili.com/bangumi/media/md4340
+        cover: https://cdn.amiracle.site/%E5%87%B8%E5%AE%88.jpg
+  game:
+    game_tips: 爱好游戏
+    game_title: stardew valley
+    game_txt: 呐,要不要一起种田?
+    game_bg: https://cdn.amiracle.site/StardewValley1.png
+    # game_uid: "UID: 125766904"
+  like:
+    like_tips: 爱好游戏
+    like_title: sekiro
+    like_bg: https://cdn.amiracle.site/sekiro.png
+    like_bottom: 只狼啊，你要切记啊，犹豫，就会败北
+  music:
+    music_tips: 爱好游戏
+    music_title: split fiction
+    music_bg: https://cdn.amiracle.site/Sfiction2.jpg
+    music_bottom: 哇哦，让我进去玩儿求你
+    # music_link: 
+    
+
+  reward_list:
+    - name: AMIR
+      amount: 11451
+      datatime: 2025-11-18
+    # - name: 海阔蓝
+    #   amount: 8.8
+    #   datatime: 2023-03-28
+    # - name: LK66
+    #   amount: 66.6
+    #   datatime: 2023-03-24
+    # - name: 张时貳
+    #   amount: 6.6
+    #   datatime: 2023-01-22
+    # - name: ZeroAf
+    #   amount: 9.9
+    #   datatime: 2022-12-14
+    # - name: LuckyWangXi
+    #   amount: 6.6
+    #   datatime: 2022-12-14
+    # - name: 刀中日月长
+    #   amount: 10
+    #   datatime: 2022-11-16
+    # - name: 鹿啵包
+    #   amount: 10
+    #   datatime: 2022-11-08
+    # - name: 疾速k
+    #   amount: 50
+    #   datatime: 2022-09-20
+    # - name: 伴舟先生大霖子
+    #   amount: 4.03
+    #   datatime: 2022-10-27
+    #   suffix: 贝壳
+    # - name: Magica_0x0
+    #   amount: 3.36
+    #   datatime: 2022-10-07
+    #   suffix: 贝壳
+    # - name: 名字就是要短像这样
+    #   amount: 3.36
+    #   datatime: 2022-08-25
+    #   suffix: 贝壳
+    # - name: Leviathan520
+    #   amount: 1.34
+    #   datatime: 2022-08-23
+    #   suffix: 贝壳
+    # - name: 托马斯
+    #   amount: 10
+    #   datatime: 2022-08-19
+    # - name: 哇是猫猫欸
+    #   amount: 1.34
+    #   datatime: 2022-08-19
+    #   suffix: 贝壳

@@ -1,0 +1,109 @@
+- class_name: 框架
+  flink_style: flexcard
+  hundredSuffix: ""
+  link_list:
+    - name: Hexo
+      link: https://hexo.io/zh-tw/
+      avatar: https://d33wubrfki0l68.cloudfront.net/6657ba50e702d84afb32fe846bed54fba1a77add/827ae/logo.svg
+      descr: 快速、简单且强大的网站框架
+    - name: anzhiyu主题
+      link: https://hexo.anheyu.com/
+      avatar: https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg
+      descr: 生活明朗，万物可爱
+      # siteshot: https://npm.elemecdn.com/anzhiyu-theme-static@1.1.6/img/hexo.anheyu.com.jpg
+      siteshot: https://cdn.amiracle.site/anzhiyu%E4%B8%BB%E9%A2%98.png
+
+- class_name: 推荐博客
+  flink_style: telescopic
+  hundredSuffix: ""
+  link_list:
+    - name: 安知鱼
+      link: https://hexo.anheyu.com/
+      avatar: https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg
+      descr: 生活明朗，万物可爱
+      siteshot: https://cdn.amiracle.site/anzhiyu%E4%B8%BB%E9%A2%98.png
+      color:
+      tag:
+    - name: 张洪Heo
+      link: https://blog.zhheo.com/
+      avatar: https://img.zhheo.com/i/67d8fa75943e4.webp
+      descr: 分享设计与科技生活
+      siteshot: https://img.zhheo.com/i/67d8fb3c51399.webp
+    # - name: amiracle
+    #   link: https://amiracle.site
+    #   avatar: https://cdn.amiracle.site/sm_avatar(1).jpg
+    #   descr: 向往之处，便是归途
+    #   siteshot: https://npm.elemecdn.com/anzhiyu-theme-static@1.1.6/img/hexo.anheyu.com.jpg
+    #   color: vip
+    #   tag: 技术
+
+- class_name: 小伙伴
+  class_desc: 那些人，那些事
+  flink_style: anzhiyu
+  hundredSuffix: ""
+  link_list:
+    - name: 安知鱼
+      link: https://hexo.anheyu.com/
+      avatar: https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg
+      descr: 生活明朗，万物可爱
+      recommend: false
+
+    - name: Amiracle
+      link: https://amiracle.site/
+      avatar: https://cdn.amiracle.site/sm_avatar(1).jpg
+      descr: 向往之处，便是归途
+      recommend: false
+
+    - name: Cao Xin
+      link: https://www.caoxin.xyz/
+      descr: Cao Xin's Blog
+      avatar: https://cdn.amiracle.site/cx_logo2.jpg
+      # siteshot: 
+
+    - name: 张洪Heo
+      link: https://blog.zhheo.com/
+      avatar: https://img.zhheo.com/i/67d8fa75943e4.webp
+      descr: 分享设计与科技生活
+      siteshot: https://img.zhheo.com/i/67d8fb3c51399.webp
+
+    - name: Elykia
+      link: https://blog.elykia.cn/
+      descr: 致以无暇之人
+      avatar: https://bu.dusays.com/2024/10/25/671b2438203a6.gif
+      siteshot: https://bu.dusays.com/2024/10/25/671b50dc2dd2b.png
+
+    - name: THW’s Blog
+      link: https://tianhw.top
+      descr: 前途似海，来日方长
+      avatar: https://image.tianhw.top/avatar.webp
+      siteshot:
+      
+    - name: 枫の屋
+      link: https://6wd.cn
+      descr: 技术宅拯救世界！
+      avatar: http://q1.qlogo.cn/g?b=qq&nk=3067027828&s=640
+      siteshot:
+      
+    - name: 栖童の小站
+      link: https://blog.linux-qitong.top
+      descr: 越努力,越幸运
+      avatar: https://blog.linux-qitong.top/img/avatar.webp
+      siteshot:
+
+    - name: UTOPIA
+      link: https://ishya.top
+      descr: 散落在世界一角的故事
+      avatar: https://ishya.top/source/imgs/avatar.jpg
+      siteshot:
+
+    - name: Arthals' ink
+      link: https://arthals.ink/
+      descr: 所见高山远木，阔云流风；所幸岁月盈余，了无拘束
+      avatar: https://cdn.arthals.ink/Arthals.png
+      siteshot:
+
+    # - name: 
+    #   link:
+    #   descr:
+    #   avatar:
+    #   siteshot:
