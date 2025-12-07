@@ -6,6 +6,7 @@ tags:
   - XCPC
   - ACM整理总结
 categories: XCPC
+cover: https://cdn.amiracle.site/Nekoha%20Shizuku.png
 ---
 
 *基于 [WIDA XCPC 模板](https://github.com/hh2048/XCPC), 对其补充和优化*
