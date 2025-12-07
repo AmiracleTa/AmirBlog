@@ -1,7 +1,7 @@
 menu:
   文章:
     隧道: /archives/ || anzhiyu-icon-box-archive
-    # 分类: /categories/ || anzhiyu-icon-shapes
+    分类: /categories/ || anzhiyu-icon-shapes
     标签: /tags/ || anzhiyu-icon-tags
 
   友链:
@@ -873,6 +873,7 @@ aside:
     highlightTags:
       - XCPC
       - ACM
+      - javascript
   card_archives:
     enable: true
     type: monthly # yearly or monthly
@@ -1294,6 +1295,7 @@ inject:
   bottom:
     # 自定义js
     # - <script src="/js/xxx"></script>
+    - <script src="/js/countdown.js"></script>
 
 # CDN
 # Don't modify the following settings unless you know how they work
