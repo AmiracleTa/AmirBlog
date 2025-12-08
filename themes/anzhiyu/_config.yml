@@ -1289,6 +1289,7 @@ inject:
   head:
     - <script defer src="https://cloud.umami.is/script.js" data-website-id="7af8969f-e622-4976-abb5-24a8cb721aed"></script>
     - <meta name="baidu-site-verification" content="codeva-qDKQZGSDt5" /> # 百度收录, 勿删
+    - <link rel="stylesheet" href="/css/custom.css"> 
     # 自定义css
     # - <link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'">
 
@@ -1296,7 +1297,7 @@ inject:
     # 自定义js
     # - <script src="/js/xxx"></script>
     - <script src="/js/countdown.js"></script>
-
+    - <script src="/js/flink.js"></script>
 # CDN
 # Don't modify the following settings unless you know how they work
 # 非必要请不要修改
