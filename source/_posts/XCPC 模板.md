@@ -1,7 +1,7 @@
 ---
 title: XCPC 模板
 date: 2025-10-21 15:12:43
-updated: 2025-11-26
+updated: 2025-12-08 13:59:55
 tags:
   - XCPC
   - ACM整理总结
@@ -282,12 +282,12 @@ vector<ull> multiply(vector<int> &a, vector<int> &b){
 
     ntt(A, 1); // 正变换
     ntt(B, 1);
-	vector<ull> C(N);
-	for(int i=0; i<N; i++) C[i] = mul(A[i], B[i]);
+    vector<ull> C(N);
+    for(int i=0; i<N; i++) C[i] = mul(A[i], B[i]);
     ntt(C, 0); // 逆变换
 
-	C.resize(n1 + n2 - 1);
-	return C;
+    C.resize(n1 + n2 - 1);
+    return C;
 }
 ```
 
@@ -298,7 +298,7 @@ ${2^k}$ 阶原根, 一般不需要找, 防止某些题奇葩模数
 ll primitive_root(){
     ll phi = mo - 1, tmp = mo - 1;
 
-	while(!(tmp & 1)) tmp >>= 1;
+    while(!(tmp & 1)) tmp >>= 1;
     for(ll g = 2; g < mo; ++g){
         if(qpow(g, phi / 2) == 1) continue; // 注意传入超 int, 需对 a, x 取模
         if(qpow(g, tmp) != 1) return g;
@@ -584,24 +584,24 @@ void sieve(){
 
 ```cpp
 ll cross(int x1, int y1, int x2, int y2){ // 两向量叉积
-	return 1ll * x1 * y2 - 1ll * y1 * x2;
+    return 1ll * x1 * y2 - 1ll * y1 * x2;
 }
 
-	// sort(a.begin(), a.end(), rad); // 精度可能不够高
-	auto quad = [](int x, int y){ // 第几象限 , 逆时针左闭右开
-		if(x > 0 && y >= 0) return 0;
-		if(x <= 0 && y > 0) return 1;
-		if(x < 0 && y >= 0) return 2;
-		return 3;
-	};
-	// 整数极角排序 , 完全无精度问题
-	sort(a.begin(), a.end(), [&](auto x, auto y){
-		auto [x1, y1] = x;
-		auto [x2, y2] = y;
-		int qdx = quad(x1, y1), qdy = quad(x2, y2);
-		if(qdx == qdy) return cross(x1, y1, x2, y2)>0; // 期待是逆时针
-		return qdx < qdy;
-	});
+    // sort(a.begin(), a.end(), rad); // 精度可能不够高
+    auto quad = [](int x, int y){ // 第几象限 , 逆时针左闭右开
+        if(x > 0 && y >= 0) return 0;
+        if(x <= 0 && y > 0) return 1;
+        if(x < 0 && y >= 0) return 2;
+        return 3;
+    };
+    // 整数极角排序 , 完全无精度问题
+    sort(a.begin(), a.end(), [&](auto x, auto y){
+        auto [x1, y1] = x;
+        auto [x2, y2] = y;
+        int qdx = quad(x1, y1), qdy = quad(x2, y2);
+        if(qdx == qdy) return cross(x1, y1, x2, y2)>0; // 期待是逆时针
+        return qdx < qdy;
+    });
 ```
 
 ## OTHER
@@ -666,26 +666,26 @@ n mod i = n - ${\lfloor{\frac{n}{i}}\rfloor i}$
 
 ```cpp
 struct BIT{
-	int n;
-	vector<ll> tree;
-	BIT(int _n) : n(_n){
-		tree.resize(n + 1);
-	}
-	void add(int x, ll v){
-		for(int i=x; i<=n; i+=i&-i){
-			tree[i] += v;
-		}
-	}
-	ll query(int x){
-		ll ans = 0;
-		for(int i=x; i>=1; i-=i&-i){
-			ans += tree[i];
-		}
-		return ans;
-	}
-	ll query(int x, int y){
-		return query(y) - query(x - 1);
-	}
+    int n;
+    vector<ll> tree;
+    BIT(int _n) : n(_n){
+        tree.resize(n + 1);
+    }
+    void add(int x, ll v){
+        for(int i=x; i<=n; i+=i&-i){
+            tree[i] += v;
+        }
+    }
+    ll query(int x){
+        ll ans = 0;
+        for(int i=x; i>=1; i-=i&-i){
+            ans += tree[i];
+        }
+        return ans;
+    }
+    ll query(int x, int y){
+        return query(y) - query(x - 1);
+    }
 
 };
 ```
@@ -1479,6 +1479,9 @@ struct PresidentTree{
 
 ## 矩阵
 
+**来自 Masttf XCPC 模板**
+{% link XCPC 模板, Masttf, https://epiphyllum.masttf.fun/, https://cdn.amiracle.site/masttf_avatar.jpg %}
+
 > (+, x)
 
 ```cpp
@@ -1487,7 +1490,7 @@ template <class T, const int M>
 struct Matrix{
     T m[M][M];
     int row, col;
-	Matrix(){};
+    Matrix(){};
     Matrix(int n){ // 单位矩阵
         row = col = n;
         for(int i = 0; i < n; i++){
@@ -1516,16 +1519,16 @@ struct Matrix{
         }
     }
     Matrix operator * (const Matrix &y) const { // (+, x)
-	    Matrix res(row, y.col);
-	    for(int i = 0; i < row; i++){
-	        for(int j = 0; j < y.col; j++){
-	            for(int k = 0; k < col; k++){
-	                res.m[i][j] += m[i][k] * y.m[k][j];
-	            }
-	        }
-	    }
-	    return res;
-	}
+        Matrix res(row, y.col);
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < y.col; j++){
+                for(int k = 0; k < col; k++){
+                    res.m[i][j] += m[i][k] * y.m[k][j];
+                }
+            }
+        }
+        return res;
+    }
     Matrix qpow (long long b){
         Matrix res(row);
         Matrix a = *this;
@@ -1537,14 +1540,14 @@ struct Matrix{
         return res;
     }
     friend ostream &operator<<(ostream &os, const Matrix &a) {
-		for(int i = 0; i < a.row; i++){
-			for(int j = 0; j < a.col; j++){
-				os << a.m[i][j] << ' ';
-			}
-			os << '\n';
-		}
-		return os;
-	}
+        for(int i = 0; i < a.row; i++){
+            for(int j = 0; j < a.col; j++){
+                os << a.m[i][j] << ' ';
+            }
+            os << '\n';
+        }
+        return os;
+    }
 };
 using matrix = Matrix<type, size>;
 ```
@@ -1557,7 +1560,7 @@ template <class T, const int M>
 struct Matrix{
     T m[M][M];
     int row, col;
-	Matrix(){};
+    Matrix(){};
     Matrix(int n){ // (max, +)单位矩阵
         row = col = n;
         for(int i = 0; i < n; i++){
@@ -1586,16 +1589,16 @@ struct Matrix{
         }
     }
     Matrix operator * (const Matrix &y) const { // (max, +)
-	    Matrix res(row, y.col);
-	    for(int i = 0; i < row; i++){
-	        for(int j = 0; j < y.col; j++){
-	            for(int k = 0; k < col; k++){
-	                res.m[i][j] = max(res.m[i][j], m[i][k] + y.m[k][j]);
-	            }
-	        }
-	    }
-	    return res;
-	}
+        Matrix res(row, y.col);
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < y.col; j++){
+                for(int k = 0; k < col; k++){
+                    res.m[i][j] = max(res.m[i][j], m[i][k] + y.m[k][j]);
+                }
+            }
+        }
+        return res;
+    }
     Matrix qpow (long long b){
         Matrix res(row);
         Matrix a = *this;
@@ -1607,20 +1610,17 @@ struct Matrix{
         return res;
     }
     friend ostream &operator<<(ostream &os, const Matrix &a) {
-		for(int i = 0; i < a.row; i++){
-			for(int j = 0; j < a.col; j++){
-				os << a.m[i][j] << ' ';
-			}
-			os << '\n';
-		}
-		return os;
-	}
+        for(int i = 0; i < a.row; i++){
+            for(int j = 0; j < a.col; j++){
+                os << a.m[i][j] << ' ';
+            }
+            os << '\n';
+        }
+        return os;
+    }
 };
 using matrix = Matrix<type, size>;
 ```
-
-[来自 Masttf XCPC 模板](https://epiphyllum.masttf.fun/post/XCPC)
-
 
 <div style="page-break-after:always"></div>
 
@@ -1711,7 +1711,7 @@ struct V_DCC {
 };
 
 void solve(){
-	int n, m;
+    int n, m;
     cin >> n >> m;
     
     V_DCC vdcc(n);
