@@ -1479,8 +1479,8 @@ struct PresidentTree{
 
 ## 矩阵
 
-**来自 Masttf XCPC 模板**
-{% link XCPC 模板, Masttf, https://epiphyllum.masttf.fun/, https://cdn.amiracle.site/masttf_avatar.jpg %}
+**来自 Masttf XCPC 板子**
+{% link XCPC 板子, Masttf, https://epiphyllum.masttf.fun/post/XCPC, https://cdn.amiracle.site/masttf_avatar.jpg %}
 
 > (+, x)
 
