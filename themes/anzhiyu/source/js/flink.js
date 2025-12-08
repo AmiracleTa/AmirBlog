@@ -1,6 +1,6 @@
 (function() {
     const STATUS_CACHE_KEY = "statusTagsData";
-    const STATUS_JSON_URL = "https://raw.githubusercontent.com/AmiracleTa/check-flink/refs/heads/main/result.json";
+    const STATUS_JSON_URL = "https://raw.githubusercontent.com/AmiracleTa/check-flink/refs/heads/page/result.json";
 
     let latestData = [];
 
