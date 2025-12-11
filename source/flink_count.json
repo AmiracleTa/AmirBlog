@@ -90,7 +90,14 @@
       "avatar": "https://ishya.top/source/imgs/avatar.jpg",
       "descr": "散落在世界一角的故事",
       "siteshot": ""
+    },
+    {
+      "name": "咖啡豆子coffee的小站",
+      "link": "https://blog.kfdzcoffee.cn/",
+      "avatar": "https://images.kfdzcoffee.cn/i/1/avatar.png",
+      "descr": "所有奇迹的始发点",
+      "siteshot": ""
     }
   ],
-  "length": 13
+  "length": 14
 }
