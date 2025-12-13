@@ -1,7 +1,8 @@
 ---
 title: XCPC 模板
 date: 2025-10-21 15:12:43
-updated: 2025-12-08 13:59:55
+# updated: 2025-12-08 13:59:55
+updated: 2025-12-13 23:34:09
 tags:
   - XCPC
   - ACM整理总结
@@ -9,7 +10,9 @@ categories: XCPC
 cover: https://cdn.amiracle.site/Nekoha%20Shizuku.png
 ---
 
-*基于 [WIDA XCPC 模板](https://github.com/hh2048/XCPC), 对其补充和优化*
+{% note info modern %}
+*基于 [WIDA XCPC 模板](https://github.com/hh2048/XCPC)，在此基础上对其补充和优化*
+{% endnote %}
 
 <!--
 
@@ -20,7 +23,323 @@ cover: https://cdn.amiracle.site/Nekoha%20Shizuku.png
 
 -->
 
-&nbsp;
+## 图论
+
+### 负权图最短路 (判负环)
+
+#### Bellman-Ford **$O(n \cdot m)$**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using pii = pair<int, int>;
+
+constexpr ll inf = 1e18;
+
+void solve(){
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pii>> gra(n + 1);
+    for(int i=1; i<=m; i++){
+        int u, v, w;
+        cin >> u >> v >> w;
+        gra[u].push_back({v, w});
+    }
+
+    vector<ll> dis(n + 1, inf);
+    dis[1] = 0;
+    for(int k=0; k<n-1; k++){ // 尝试 n - 1 轮松弛
+        for(int i=1; i<=n; i++){
+            for(auto [v, w] : gra[i]){
+                dis[v] = min(dis[v], dis[i] + w);
+            }
+        }
+    }
+
+    bool neg = false; // neg 为 ture 则存在负环
+    for(int i=1; i<=n; i++){
+        for(auto [v, w] : gra[i]){
+            neg |= dis[i]+w < dis[v];
+        }
+    }
+}
+
+int main(){
+    ios::**sync_with_stdio**(false);
+    cin.tie(nullptr);
+
+    int t = 1; cin >> t;
+    while(t--) solve();
+    
+    return 0;
+}
+```
+
+#### SPFA **$O(k \cdot m)$**
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using pii = pair<int, int>;
+
+constexpr ll inf = 1e18;
+
+void solve(){
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pii>> gra(n + 1);
+    for(int i=1; i<=m; i++){
+        int u, v, w;
+        cin >> u >> v >> w;
+        gra[u].push_back({v, w});
+    }
+
+    bool neg = false;
+    int s = 1; // 源点 // 可能要建超级源点
+    vector<bool> inq(n + 1);
+    vector<int> cnt(n + 1);
+    vector<ll> dis(n + 1, inf);
+    dis[s] = 0, inq[s] = true;
+    queue<int> q;
+    q.push(s);
+    while(!q.empty() && !neg){
+        int u = q.front(); q.pop();
+        inq[u] = false;
+        for(auto [v, w] : gra[u]){
+            if(dis[u] + w < dis[v]){
+                dis[v] = dis[u] + w;
+
+                if(!inq[v]) q.push(v), inq[v]=true, cnt[v]++;
+                if(cnt[v] >= n){
+                    neg = true;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t = 1; cin >> t;
+    while(t--) solve();
+    
+    return 0;
+}
+```
+
+### Tarjan 求连通分量
+
+#### 点双连通分量
+
+> 点双个数 & 每个点双的节点
+
+```cpp
+struct V_DCC {
+    int n;
+    vector<vector<int>> ver, col; // 颜色 i 的点集 col[i]
+    vector<int> dfn, low, S;
+    int now, cnt;
+    vector<bool> point; // 记录是否为割点
+
+    V_DCC(int n) : n(n) {
+        ver.resize(n + 1);
+        dfn.resize(n + 1);
+        low.resize(n + 1);
+        col.resize(2 * n + 1);
+        point.resize(n + 1);
+        S.clear();
+        cnt = now = 0;
+    }
+    void add(int x, int y) {
+        if (x == y) return; // 手动去除重边
+        ver[x].push_back(y);
+        ver[y].push_back(x);
+    }
+    void tarjan(int x, int root) {
+        low[x] = dfn[x] = ++now;
+        S.push_back(x);
+        if (x == root && !ver[x].size()) { // 特判孤立点
+            ++cnt;
+            col[cnt].push_back(x);
+            return;
+        }
+
+        int flag = 0;
+        for (auto y : ver[x]) {
+            if (!dfn[y]) {
+                tarjan(y, root);
+                low[x] = min(low[x], low[y]);
+                if (dfn[x] <= low[y]) {
+                    flag++;
+                    if (x != root || flag > 1) {
+                        point[x] = true; // 标记为割点
+                    }
+                    int pre = 0;
+                    cnt++;
+                    do {
+                        pre = S.back();
+                        col[cnt].push_back(pre);
+                        S.pop_back();
+                    } while (pre != y);
+                    col[cnt].push_back(x);
+                }
+            } else {
+                low[x] = min(low[x], dfn[y]);
+            }
+        }
+    }
+    pair<int, vector<vector<int>>> rebuild() { // [新图的顶点数量, 新图]
+        work();
+        vector<vector<int>> adj(cnt + 1);
+        for (int i = 1; i <= cnt; i++) {
+            if (!col[i].size()) { // 注意，孤立点也是 V-DCC
+                continue;
+            }
+            for (auto j : col[i]) {
+                if (point[j]) { // 如果 j 是割点
+                    adj[i].push_back(point[j]);
+                    adj[point[j]].push_back(i);
+                }
+            }
+        }
+        return {cnt, adj};
+    }
+    void work() {
+        for (int i = 1; i <= n; ++i) { // 避免图不连通
+            if (!dfn[i]) {
+                tarjan(i, i);
+            }
+        }
+    }
+};
+
+void solve(){
+    int n, m;
+    cin >> n >> m;
+    
+    V_DCC vdcc(n);
+    for(int i=0; i<m; i++){
+        int u, v;
+        cin >> u >> v;
+        vdcc.add(u, v);
+        vdcc.add(v, u);
+    }
+
+    vdcc.work();
+    cout << vdcc.cnt << '\n';
+    for(int i=1; i<=vdcc.cnt; i++){
+        cout << vdcc.col[i].size();
+        for(int x : vdcc.col[i]){
+            cout << " " << x;
+        }
+        cout << '\n';
+    }
+}
+```
+
+#### 边双连通分量
+
+> 边双个数 & 每个边双的节点
+
+```cpp
+struct EDCC {
+    int n, m, now, cnt;
+    vector<vector<array<int, 2>>> ver;
+    vector<int> dfn, low, col, S;
+    set<array<int, 2>> bridge, direct; // 如果不需要，删除这一部分可以得到一些时间上的优化
+
+    EDCC(int n) : n(n), low(n + 1), ver(n + 1), dfn(n + 1), col(n + 1) {
+        m = now = cnt = 0;
+    }
+    void add(int x, int y) { // 和 scc 相比多了一条连边
+        ver[x].push_back({y, m});
+        ver[y].push_back({x, m++});
+    }
+    void tarjan(int x, int fa) {
+        dfn[x] = low[x] = ++now;
+        S.push_back(x);
+        for (auto &[y, id] : ver[x]) {
+            if (!dfn[y]) {
+                direct.insert({x, y});
+                tarjan(y, id);
+                low[x] = min(low[x], low[y]);
+                if (dfn[x] < low[y]) {
+                    bridge.insert({x, y});
+                }
+            } else if (id != fa && dfn[y] < dfn[x]) {
+                direct.insert({x, y});
+                low[x] = min(low[x], dfn[y]);
+            }
+        }
+        if (dfn[x] == low[x]) {
+            int pre;
+            cnt++;
+            do {
+                pre = S.back();
+                col[pre] = cnt;
+                S.pop_back();
+            } while (pre != x);
+        }
+    }
+    auto work() {
+        for (int i = 1; i <= n; i++) { // 避免图不连通
+            if (!dfn[i]) {
+                tarjan(i, 0);
+            }
+        }
+        /**
+         * @param cnt 新图的顶点数量, adj 新图, col 旧图节点对应的新图节点
+         * @param siz 旧图每一个边双中点的数量
+         * @param bridge 全部割边, direct 非割边定向
+         */
+        vector<int> siz(cnt + 1);
+        vector<vector<int>> adj(cnt + 1); // 压缩图
+        for (int i = 1; i <= n; i++) {
+            siz[col[i]]++;
+            for (auto &[j, id] : ver[i]) {
+                int x = col[i], y = col[j];
+                if (x != y) {
+                    adj[x].push_back(y);
+                }
+            }
+        }
+        return tuple{cnt, adj, col, siz};
+    }
+
+};
+
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    EDCC edcc(n);
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        edcc.add(u, v); // 只加一次
+    }
+
+    edcc.work();
+    vector<vector<int>> col(edcc.cnt+1);
+    for(int i=1; i<=n; i++){
+        col[edcc.col[i]].push_back(i);
+    }
+    cout << edcc.cnt << '\n';
+    for(int i=1; i<=edcc.cnt; i++){
+        cout << col[i].size();
+        for(int x : col[i]){
+            cout << " " << x;
+        }
+        cout << '\n';
+    }
+}
+```
+
+<div style="page-break-after:always"></div>
 
 # 数论
 
@@ -1624,220 +1943,11 @@ using matrix = Matrix<type, size>;
 
 <div style="page-break-after:always"></div>
 
-# 图论
-
-### Tarjan 点双连通分量
-
-> 点双个数 & 每个点双的节点
-
-```cpp
-struct V_DCC {
-    int n;
-    vector<vector<int>> ver, col; // 颜色 i 的点集 col[i]
-    vector<int> dfn, low, S;
-    int now, cnt;
-    vector<bool> point; // 记录是否为割点
-
-    V_DCC(int n) : n(n) {
-        ver.resize(n + 1);
-        dfn.resize(n + 1);
-        low.resize(n + 1);
-        col.resize(2 * n + 1);
-        point.resize(n + 1);
-        S.clear();
-        cnt = now = 0;
-    }
-    void add(int x, int y) {
-        if (x == y) return; // 手动去除重边
-        ver[x].push_back(y);
-        ver[y].push_back(x);
-    }
-    void tarjan(int x, int root) {
-        low[x] = dfn[x] = ++now;
-        S.push_back(x);
-        if (x == root && !ver[x].size()) { // 特判孤立点
-            ++cnt;
-            col[cnt].push_back(x);
-            return;
-        }
-
-        int flag = 0;
-        for (auto y : ver[x]) {
-            if (!dfn[y]) {
-                tarjan(y, root);
-                low[x] = min(low[x], low[y]);
-                if (dfn[x] <= low[y]) {
-                    flag++;
-                    if (x != root || flag > 1) {
-                        point[x] = true; // 标记为割点
-                    }
-                    int pre = 0;
-                    cnt++;
-                    do {
-                        pre = S.back();
-                        col[cnt].push_back(pre);
-                        S.pop_back();
-                    } while (pre != y);
-                    col[cnt].push_back(x);
-                }
-            } else {
-                low[x] = min(low[x], dfn[y]);
-            }
-        }
-    }
-    pair<int, vector<vector<int>>> rebuild() { // [新图的顶点数量, 新图]
-        work();
-        vector<vector<int>> adj(cnt + 1);
-        for (int i = 1; i <= cnt; i++) {
-            if (!col[i].size()) { // 注意，孤立点也是 V-DCC
-                continue;
-            }
-            for (auto j : col[i]) {
-                if (point[j]) { // 如果 j 是割点
-                    adj[i].push_back(point[j]);
-                    adj[point[j]].push_back(i);
-                }
-            }
-        }
-        return {cnt, adj};
-    }
-    void work() {
-        for (int i = 1; i <= n; ++i) { // 避免图不连通
-            if (!dfn[i]) {
-                tarjan(i, i);
-            }
-        }
-    }
-};
-
-void solve(){
-    int n, m;
-    cin >> n >> m;
-    
-    V_DCC vdcc(n);
-    for(int i=0; i<m; i++){
-        int u, v;
-        cin >> u >> v;
-        vdcc.add(u, v);
-        vdcc.add(v, u);
-    }
-
-    vdcc.work();
-    cout << vdcc.cnt << '\n';
-    for(int i=1; i<=vdcc.cnt; i++){
-        cout << vdcc.col[i].size();
-        for(int x : vdcc.col[i]){
-            cout << " " << x;
-        }
-        cout << '\n';
-    }
-}
-```
-
-### Tarjan 边双连通分量
-
-> 边双个数 & 每个边双的节点
-
-```cpp
-struct EDCC {
-    int n, m, now, cnt;
-    vector<vector<array<int, 2>>> ver;
-    vector<int> dfn, low, col, S;
-    set<array<int, 2>> bridge, direct; // 如果不需要，删除这一部分可以得到一些时间上的优化
-
-    EDCC(int n) : n(n), low(n + 1), ver(n + 1), dfn(n + 1), col(n + 1) {
-        m = now = cnt = 0;
-    }
-    void add(int x, int y) { // 和 scc 相比多了一条连边
-        ver[x].push_back({y, m});
-        ver[y].push_back({x, m++});
-    }
-    void tarjan(int x, int fa) {
-        dfn[x] = low[x] = ++now;
-        S.push_back(x);
-        for (auto &[y, id] : ver[x]) {
-            if (!dfn[y]) {
-                direct.insert({x, y});
-                tarjan(y, id);
-                low[x] = min(low[x], low[y]);
-                if (dfn[x] < low[y]) {
-                    bridge.insert({x, y});
-                }
-            } else if (id != fa && dfn[y] < dfn[x]) {
-                direct.insert({x, y});
-                low[x] = min(low[x], dfn[y]);
-            }
-        }
-        if (dfn[x] == low[x]) {
-            int pre;
-            cnt++;
-            do {
-                pre = S.back();
-                col[pre] = cnt;
-                S.pop_back();
-            } while (pre != x);
-        }
-    }
-    auto work() {
-        for (int i = 1; i <= n; i++) { // 避免图不连通
-            if (!dfn[i]) {
-                tarjan(i, 0);
-            }
-        }
-        /**
-         * @param cnt 新图的顶点数量, adj 新图, col 旧图节点对应的新图节点
-         * @param siz 旧图每一个边双中点的数量
-         * @param bridge 全部割边, direct 非割边定向
-         */
-        vector<int> siz(cnt + 1);
-        vector<vector<int>> adj(cnt + 1); // 压缩图
-        for (int i = 1; i <= n; i++) {
-            siz[col[i]]++;
-            for (auto &[j, id] : ver[i]) {
-                int x = col[i], y = col[j];
-                if (x != y) {
-                    adj[x].push_back(y);
-                }
-            }
-        }
-        return tuple{cnt, adj, col, siz};
-    }
-
-};
-
-void solve() {
-    int n, m;
-    cin >> n >> m;
-    EDCC edcc(n);
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        edcc.add(u, v); // 只加一次
-    }
-
-    edcc.work();
-    vector<vector<int>> col(edcc.cnt+1);
-    for(int i=1; i<=n; i++){
-        col[edcc.col[i]].push_back(i);
-    }
-    cout << edcc.cnt << '\n';
-    for(int i=1; i<=edcc.cnt; i++){
-        cout << col[i].size();
-        for(int x : col[i]){
-            cout << " " << x;
-        }
-        cout << '\n';
-    }
-}
-```
-
-<div style="page-break-after:always"></div>
-
-# 杂项
+## 杂项
 
 ### 随机数生成
 
->  直接生成 64 位随机数
+> 直接生成 64 位随机数
 
 ```cpp
 ull seed = chrono::steady_clock::now().time_since_epoch().count();
@@ -1859,8 +1969,6 @@ uniform_int_distribution<long long> dist_ll(lo, hi);
 long long x = dist_ll(rng);
 ```
 
-
-
 ### 防卡hash
 
 ``` cpp
@@ -1881,5 +1989,3 @@ struct custom_hash {
     }
 };
 ```
-
-[^随意套或构造]: 
