@@ -57,7 +57,7 @@ void solve(){
         }
     }
 
-    bool neg = false; // neg 为 ture 则存在负环
+    bool neg = false; // 额外跑一轮 // neg 为 ture 则存在负环
     for(int i=1; i<=n; i++){
         for(auto [v, w] : gra[i]){
             neg |= dis[i]+w < dis[v];
@@ -110,7 +110,7 @@ void solve(){
         for(auto [v, w] : gra[u]){
             if(dis[u] + w < dis[v]){
                 dis[v] = dis[u] + w;
-                cnt[v] = cnt[n] + 1;
+                cnt[v] = cnt[u] + 1;
 
                 if(!inq[v]) q.push(v), inq[v]=true;
 
