@@ -66,7 +66,7 @@ void solve(){
 }
 
 int main(){
-    ios::**sync_with_stdio**(false);
+    ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
     int t = 1; cin >> t;
@@ -84,7 +84,7 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 
-constexpr ll inf = 1e18;
+constexpr ll inf = 3e18;
 
 void solve(){
     int n, m;
@@ -110,8 +110,10 @@ void solve(){
         for(auto [v, w] : gra[u]){
             if(dis[u] + w < dis[v]){
                 dis[v] = dis[u] + w;
+                cnt[v] = cnt[n] + 1;
 
-                if(!inq[v]) q.push(v), inq[v]=true, cnt[v]++;
+                if(!inq[v]) q.push(v), inq[v]=true;
+
                 if(cnt[v] >= n){
                     neg = true;
                     break;
@@ -341,9 +343,9 @@ void solve() {
 
 <div style="page-break-after:always"></div>
 
-# 数论
+## 数论
 
-## 反演
+### 反演
 
 #### 子集反演
 
@@ -385,9 +387,9 @@ $$
 
 <div style="page-break-after:always"></div>
 
-## 卷积
+### 卷积
 
-### FFT 快速傅里叶变换
+#### FFT 快速傅里叶变换
 
 ```cpp
 #include <bits/stdc++.h>
@@ -510,7 +512,7 @@ int main(){
 }
 ```
 
-### NTT 快速数论变换
+#### NTT 快速数论变换
 
 > 取模版 FFT
 
@@ -626,7 +628,7 @@ ll primitive_root(){
 }
 ```
 
-### FWT 快速沃尔什变换
+#### FWT 快速沃尔什变换
 
 > ${O(nlog)}$ 或者说 ${O(n2^n)}$ 计算 and | or | xor 卷积   (位运算卷积)
 
@@ -772,13 +774,13 @@ auto fwt(vector<ll> A, vector<ll> B, F FWT){
 }
 ```
 
-### FMT 快速莫比乌斯变换
+#### FMT 快速莫比乌斯变换
 
 > ${O(n^2 \cdot 2^n)}$ 子集卷积, 对于
 
 $$
 \begin{align*}
-\sum_{k = i\cup j,\;x\cap y=\phi} A_i \cdot B_j 
+\sum_{k = i\cup j,\;x\cap y=\phi} A_i \cdot B_j
 \end{align*}
 $$
 
@@ -849,7 +851,7 @@ void solve(){
 }
 ```
 
-## 预处理 - 逆元 - 组合数
+### 预处理 - 逆元 - 组合数
 
 > ${O(n)}$ 预处理 , ${O(1)}$ 查询
 
@@ -876,7 +878,7 @@ ll comb(ll n, ll k){ // C(n, k) 组合数
 }
 ```
 
-## 线筛
+### 线筛
 
 ```c++
 vector<int> pri, mi_fct;
@@ -898,8 +900,7 @@ void sieve(){
 }
 ```
 
-
-## 极角排序(整数运算，无精度问题)
+### 极角排序(整数运算，无精度问题)
 
 ```cpp
 ll cross(int x1, int y1, int x2, int y2){ // 两向量叉积
@@ -923,7 +924,7 @@ ll cross(int x1, int y1, int x2, int y2){ // 两向量叉积
     });
 ```
 
-## OTHER
+### OTHER
 
 #### $min$, $max$ 绝对值的恒等式
 
@@ -976,12 +977,11 @@ ${x = x_0 + k \frac{p}{g}} \quad k=0,1,2\cdots g-1$
 
 n mod i = n - ${\lfloor{\frac{n}{i}}\rfloor i}$
 
-
 <div style="page-break-after:always"></div>
 
-# 数据结构
+## 数据结构
 
-## 树状数组
+### 树状数组
 
 ```cpp
 struct BIT{
@@ -1009,7 +1009,7 @@ struct BIT{
 };
 ```
 
-## DSU
+### DSU
 
 ```cpp
 struct DSU{
@@ -1036,7 +1036,7 @@ struct DSU{
 };
 ```
 
-## ST表
+### ST表
 
 ```cpp
 struct ST{
@@ -1068,7 +1068,7 @@ struct ST{
 };
 ```
 
-## SegTree
+### SegTree
 
 > 区间修改|区间查询 通用结构
 
@@ -1260,7 +1260,6 @@ struct SegTree{
     ll query(int L, int R){ return query(1, 0, n, L, R); } // 区间查询
 };
 ```
-
 
 > 区间加 (ai+v) | 区间最值
 
@@ -1539,7 +1538,6 @@ struct SegTree{ // 0-idx
 };
 ```
 
-
 > 区间最值更新 ( ai=max(ai, v) ) | 区间最值
 
 ```cpp
@@ -1631,7 +1629,6 @@ struct SegTree{
     ll query(int L, int R){ return query(1, 0, n, L, R); } // 区间最值
 };
 ```
-
 
 > 无区间修改 | 区间乘积
 
@@ -1760,7 +1757,7 @@ struct SegTree{
 };
 ```
 
-## 可持久化线段树
+### 可持久化线段树
 
 ```cpp
 struct PresidentTree{
@@ -1796,9 +1793,9 @@ struct PresidentTree{
 };
 ```
 
-## 矩阵
+### 矩阵
 
-**来自 Masttf XCPC 板子**
+来自 **Masttf** XCPC 板子
 {% link XCPC 板子, Masttf, https://epiphyllum.masttf.fun/post/XCPC, https://cdn.amiracle.site/masttf_avatar.jpg %}
 
 > (+, x)
