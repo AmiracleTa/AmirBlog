@@ -7,7 +7,9 @@ tags:
     - dp
 ---
 
-*今日一言 : **Now or Never.***
+{% note info simple %}
+{% p cyan, *今日一言* : ***Now or Never.*** %}
+{% endnote %}
 
 ## 前言
 
