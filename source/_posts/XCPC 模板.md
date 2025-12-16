@@ -341,6 +341,77 @@ void solve() {
 }
 ```
 
+### 最大流
+
+```cpp
+template<typename T>
+struct Flow_ {
+    using pit = pair<int, T>; // pit = {v, capacity}
+    const T inf = numeric_limits<T>::max();
+
+    const int n;
+    vector<pit> edges;
+    vector<vector<int>> h;
+    vector<int> cur, d;
+
+    Flow_(int n) : n(n + 1), h(n + 1) {}
+
+    void add_edge(int u, int v, T c) {
+        h[u].push_back(edges.size());
+        edges.push_back({v, c});
+        h[v].push_back(edges.size());
+        edges.push_back({u, 0}); // 反向边
+    }
+
+    bool bfs(int s, int t) {
+        d.assign(n, -1);
+        d[s] = 0;
+        queue<int> q;
+        q.push(s);
+        while (!q.empty()) {
+            int x = q.front(); q.pop();
+            for (int idx : h[x]) {
+                auto &[v, w] = edges[idx];
+                if (w && d[v] == -1) {
+                    d[v] = d[x] + 1;
+                    if (v == t) return true;
+                    q.push(v);
+                }
+            }
+        }
+        return false;
+    }
+
+    T dfs(int u, int t, T f) {
+        if (u == t) return f;
+        T r = f;
+        for (int &i = cur[u]; i < h[u].size(); i++) {
+            int j = h[u][i];
+            auto &[v, c] = edges[j];
+            auto &[rv, rc] = edges[j ^ 1];
+            if (c && d[v] == d[u] + 1) {
+                T a = dfs(v, t, min(r, c));
+                c -= a;
+                rc += a;
+                r -= a;
+                if (!r) return f;
+            }
+        }
+        return f - r;
+    }
+
+    T maxflow(int s, int t) {
+        T ans = 0;
+        while (bfs(s, t)) {
+            cur.assign(n, 0);
+            ans += dfs(s, t, inf);
+        }
+        return ans;
+    }
+};
+using Flow = Flow_<int>;
+```
+
 <div style="page-break-after:always"></div>
 
 ## 数论
