@@ -1,5 +1,5 @@
 ---
-title: 二维离线 && RMQ在线
+title: RMQ在线 && 二维离线
 date: 2025-10-02 15:56:07
 updated: 2025-10-02
 tags:
@@ -7,7 +7,7 @@ tags:
   - 离线
   - RMQ
 categories: XCPC
-cover: https://cdn.amiracle.site/cuteee.jpg
+cover: https://cdn.amiracle.site/%E6%B5%AE%E9%81%8A.jpg
 ---
 
 ### [CF1887D](https://codeforces.com/contest/1887/problem/D)
@@ -328,16 +328,13 @@ void solve(){
 }
 
 int main(){
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
     init();
 
-	int t = 1; // cin >> t;
-	while(t--) solve();
-	
-	return 0;
+    int t = 1; // cin >> t;
+    while(t--) solve();
+    
+    return 0;
 }
 ```
-
-
-

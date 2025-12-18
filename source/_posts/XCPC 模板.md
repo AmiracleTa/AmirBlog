@@ -2,7 +2,9 @@
 title: XCPC 模板
 date: 2025-10-21 15:12:43
 # updated: 2025-12-08 13:59:55
-updated: 2025-12-13 23:34:09
+# updated: 2025-12-13 23:34:09
+# updated: 2025-12-16 00:00:00
+updated: 2025-12-18 00:00:00
 tags:
   - XCPC
   - ACM整理总结
@@ -24,6 +26,93 @@ cover: https://cdn.amiracle.site/Nekoha%20Shizuku.png
 -->
 
 ## 图论
+
+### LCA 最近公共祖先
+
+#### 倍增 LCA
+
+```cpp
+    vector<int> dep(n + 1), p(n + 1);
+    auto dfs1 = [&](auto&& self, int fa, int u) ->void {
+        dep[u] = dep[fa] + 1;
+        p[u] = fa;
+        for(int v : gra[u]) if(v != fa) {
+            self(self, u, v);
+        }
+    };
+    dfs1(dfs1, 0, S);
+
+    int MX = __lg(2*n - 1);
+    vector<vector<int>> st(n + 1, vector<int>(MX + 1));
+    for(int i=1; i<=n; i++) st[i][0] = p[i];
+    for(int j=1; j<=MX; j++){
+        for(int i=1; i<=n; i++){
+            st[i][j] = st[st[i][j-1]][j-1];
+        }
+    }
+    
+    auto lca = [&](int x, int y){
+        if(dep[x] > dep[y]) swap(x, y);
+        for(int j=MX; j>=0; j--){
+            if(dep[st[y][j]] < dep[x]) continue;
+            y = st[y][j];
+        }
+
+        if(x == y) return x; // 特判 x, y 在 1 条链
+
+        for(int j=MX; j>=0; j--){
+            if(st[x][j] == st[y][j]) continue;
+            x = st[x][j];
+            y = st[y][j];
+        }
+        return p[x];
+    };
+```
+
+#### HLD LCA
+
+```cpp
+    // top 链顶点 , p 直接父亲
+    vector<int> siz(n + 1), dep(n + 1), top(n + 1), p(n + 1);
+    auto dfs1 = [&](auto&& self, int fa, int u) ->void { 
+        p[u] = fa;
+        siz[u] = 1;
+        for(int v : gra[u]) if(v != fa) {
+            dep[v] = dep[u] + 1;
+            self(self, u, v);
+            siz[u] += siz[v];
+        }
+    };
+    dfs1(dfs1, 0, S);
+
+    // get top
+    auto dfs2 = [&](auto&& self, int fa, int u, int t) ->void {
+        top[u] = t;
+        int son = 0;
+        for(int v : gra[u]) if(v != fa) {
+            if(siz[v] > siz[son]){
+                son = v;
+            }
+        }
+
+        if(!son) return;
+
+        self(self, u, son, t);
+        for(int v : gra[u]) if(v != fa && v != son){
+            self(self, u, v, v);
+        }
+    };
+    dfs2(dfs2, 0, S, S);
+
+    auto lca = [&](int x, int y){
+        while(top[x] != top[y]){
+            if(dep[top[x]] > dep[top[y]]) swap(x, y);
+            y = p[top[y]];
+        }
+        if(dep[x] > dep[y]) swap(x, y); 
+        return x;
+    };
+```
 
 ### 负权图最短路 (判负环)
 
@@ -341,7 +430,7 @@ void solve() {
 }
 ```
 
-### 最大流
+### 最大流-最小割
 
 ```cpp
 template<typename T>
