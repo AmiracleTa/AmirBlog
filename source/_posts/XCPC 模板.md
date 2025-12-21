@@ -1147,8 +1147,9 @@ n mod i = n - ${\lfloor{\frac{n}{i}}\rfloor i}$
 struct BIT{
     int n;
     vector<ll> tree;
-    BIT(int _n) : n(_n){
-        tree.resize(n + 1);
+    void init(int n_){
+        n = n_;
+        tree = vector<ll>(n + 1);
     }
     void add(int x, ll v){
         for(int i=x; i<=n; i+=i&-i){
@@ -1166,6 +1167,18 @@ struct BIT{
         return query(y) - query(x - 1);
     }
 
+    // 权值树状数组 第 k 大
+    int kth(int k){
+        int x = 0;
+        for(int i=__lg(2*n-1); i>=0; i--){
+            int tmp = x + (1 << i);
+            if(tmp <= n && tree[tmp] < k){
+                k -= tree[tmp];
+                x = tmp;
+            }
+        }
+        return x + 1;
+    }
 };
 ```
 

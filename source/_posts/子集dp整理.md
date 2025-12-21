@@ -7,7 +7,8 @@ tags:
   - XCPC
   - dp
 categories: XCPC
-cover: https://cdn.amiracle.site/voidRE%EF%BC%9Aera.jpg
+# cover: https://cdn.amiracle.site/voidRE%EF%BC%9Aera.jpg
+cover: https://cdn.amiracle.site/%E4%BC%8A%E9%9B%B7%E5%A8%9C.jpg
 ---
 
 

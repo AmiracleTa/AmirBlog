@@ -14,3 +14,4 @@ https://www.luogu.com.cn/problem/P13085 windy
 
 https://www.luogu.com.cn/problem/P10958 启示录
 
+https://codeforces.com/gym/105459/problem/A // 类数位 dp
