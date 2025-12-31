@@ -19,3 +19,41 @@
 .status-tag-light-yellow { background-color: #fed101; }
 .status-tag-dark-yellow { background-color: #f0b606; }
 .status-tag-red { background-color: #b90000; }
+
+.snowflake-container {
+    position: fixed;
+    width: 15px;
+    height: 15px;
+    top: -15px;
+    left: 50%;
+    z-index: 15;
+    pointer-events: none;
+    animation: fall 13s linear forwards;
+}
+
+.snowflake {
+    width: 100%;
+    height: 100%;
+    background-image: url('https://cdn.amiracle.site/Snow-Flake-PNG.png');
+    background-size: cover;
+    opacity: 0.8;
+    animation: rotate 10s linear infinite;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(110vh);
+    }
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

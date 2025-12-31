@@ -1288,10 +1288,11 @@ dynamicEffect:
 inject:
   head:
     # 自定义css
-    # - <link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'">
+    - <link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'">
+    
     - <script defer src="https://cloud.umami.is/script.js" data-website-id="7af8969f-e622-4976-abb5-24a8cb721aed"></script>
     - <meta name="baidu-site-verification" content="codeva-qDKQZGSDt5" /> # 百度收录, 勿删
-    - <link rel="stylesheet" href="/css/custom.css"> 
+    
 
   bottom:
     # 自定义js
@@ -1299,6 +1300,7 @@ inject:
     - <script src="/js/countdown.js"></script>
     - <script src="/js/flink.js"></script>
     - <script src="/js/cover-loading.js"></script>
+    - <script src="/js/snowflake.js"></script>
     
 # CDN
 # Don't modify the following settings unless you know how they work
