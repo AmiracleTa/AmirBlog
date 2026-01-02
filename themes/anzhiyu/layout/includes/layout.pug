@@ -7,6 +7,8 @@ doctype html
 html(lang=config.language data-theme=theme.display_mode class=htmlClassHideAside)
   head
     include ./head.pug
+  //- 添加类的话好像会被覆盖掉 , 用 id 的话好像也有问题 , 可以用作者提供的 data-type
+  //- 不过不是很清楚 anzhiyu 的作用域 ?
   body(data-type="anzhiyu")
     #web_bg
     #an_music_bg

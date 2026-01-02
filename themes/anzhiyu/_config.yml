@@ -165,7 +165,6 @@ disable_top_img: false
 # index_img: "background: url(https://cdn.amiracle.site/azusa.jpg) top / cover no-repeat"
 # index_img: "background: url(https://cdn.amiracle.site/voidRE%EF%BC%9Aera.jpg) top / cover no-repeat"
 # index_img: "background: url(https://cdn.jsdelivr.net/gh/AmiracleTa/pic-bed/img/voidRE%EF%BC%9Aera.jpg) top / cover no-repeat"
-
 index_img: "background: url(https://cdn.amiracle.site/voidRE%EF%BC%9Aera.jpg) 55% top / cover no-repeat"
 
 # If the banner of page not setting, it will show the top_img

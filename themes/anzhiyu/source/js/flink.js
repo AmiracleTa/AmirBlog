@@ -1,3 +1,4 @@
+// 获取友链状态
 (function() {
     const STATUS_CACHE_KEY = "statusTagsData";
     const STATUS_JSON_URL = "https://raw.githubusercontent.com/AmiracleTa/check-flink/refs/heads/page/result.json";
