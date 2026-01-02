@@ -1,7 +1,7 @@
 const CountdownTimer = (() => {
     const config = {
-        targetDate: "2026-01-01",
-        targetName: "元旦",
+        targetDate: "2026-02-17",
+        targetName: "春节",
         units: {
             day: { text: "今日", unit: "小时" },
             week: { text: "本周", unit: "天" },
@@ -99,6 +99,7 @@ const CountdownTimer = (() => {
             .cd-count-left .cd-name {
                 font-weight: bold;
                 font-size: 18px;
+                color: #fe2212c7;
             }
             .cd-count-left .cd-time {
                 font-size: 30px;
