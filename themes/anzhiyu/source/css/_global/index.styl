@@ -99,6 +99,7 @@
   --anzhiyu-green: #57bd6a;
   --anzhiyu-fontcolor: #363636;
   --anzhiyu-background: #f7f9fe;
+  // --anzhiyu-background: url('https://cdn.amiracle.site/%E6%9B%B8%E7%94%9F.jpg');
   --anzhiyu-reverse: #000;
   --anzhiyu-maskbg: rgba(255, 255, 255, 0.6);
   --anzhiyu-maskbgdeep: rgba(255, 255, 255, 0.85);
@@ -272,19 +273,25 @@ body
 input::placeholder
   color: var(--font-color)
 
+// 网页背景
 #web_bg
   position: fixed
   z-index: -999
-  width: 200%;
-  height: 200%;
-  top: -50%;
-  left: -50%;
-  transform: rotate(-1deg);
+  // top: -50%;
+  // left: -50%;
+  // width: 200%;
+  // height: 200%;
+  // transform: rotate(-1deg);
+  width: 150%;
+  height: 150%;
+  top: -20%;
+  left: -25%;
   -webkit-overflow-scrolling: touch;
   background: var(--anzhiyu-background)
   background-attachment: local
   background-position: center
-  background-size: cover
+  // background-size: cover
+  background-size: contain
   background-repeat: no-repeat
 
 h1,

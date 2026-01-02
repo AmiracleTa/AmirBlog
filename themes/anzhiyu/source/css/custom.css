@@ -1,3 +1,4 @@
+/* 友链状态 */
 .status-tag {
     position: absolute;
     bottom: 0;
@@ -20,6 +21,7 @@
 .status-tag-dark-yellow { background-color: #f0b606; }
 .status-tag-red { background-color: #b90000; }
 
+/* 雪花效果 */
 .snowflake-container {
     position: fixed;
     width: 15px;
@@ -56,4 +58,26 @@
     100% {
         transform: rotate(360deg);
     }
+}
+
+
+/* 一图流 */
+body[data-type="anzhiyu"] #web_bg {
+    --anzhiyu-background: url('https://cdn.amiracle.site/%E6%9B%B8%E7%94%9F.jpg');
+    filter: blur(0.5px) brightness(0.75);
+}
+/* 头图透明 */
+body[data-type="anzhiyu"] #page-header {
+    background: transparent !important;
+}
+/* 页脚透明 */
+body[data-type="anzhiyu"] #footer {
+    background: transparent !important;
+}
+/* 底部透明 */
+body[data-type="anzhiyu"] #footer-bar{
+background: transparent !important;
+}
+body[data-type="anzhiyu"] {
+    --anzhiyu-card-bg: rgba(255, 255, 255, 0.93);
 }
