@@ -36,10 +36,7 @@ function clearAll() {
     snowflakes.forEach(snowflake => {
         snowflake.remove();
     });
-    if (intervaler) {
-        clearInterval(intervaler);
-        intervaler = null;
-    }
+    clearInterval(intervaler); // 停止定时器
 }
 
 // init
@@ -47,9 +44,8 @@ start();
 
 // 失焦/聚焦
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        clearAll();
-    } else {
+    clearAll();
+    if(document.hidden === false) {
         start();
     }
 });
