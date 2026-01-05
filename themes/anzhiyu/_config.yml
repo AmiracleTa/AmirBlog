@@ -479,7 +479,7 @@ footer:
       #   shields: https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr
       #   message: 本站使用JSDELIVR为静态资源提供CDN加速
 
-      - link: https://github.com/
+      - link: https://github.com/AmiracleTa/AmirBlog
         shields: https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Source-Github.svg
         message: 本站项目由Github托管
       - link: http://creativecommons.org/licenses/by-nc-sa/4.0/
