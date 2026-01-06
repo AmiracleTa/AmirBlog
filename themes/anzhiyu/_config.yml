@@ -1296,6 +1296,7 @@ inject:
   bottom:
     # 自定义js
     # - <script src="/js/xxx"></script>
+    - <script src="/js/card_visitor.js"></script>
     - <script src="/js/countdown.js"></script>
     - <script src="/js/flink.js"></script>
     - <script src="/js/cover-loading.js"></script>
