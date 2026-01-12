@@ -99,3 +99,11 @@ background: transparent !important;
 body[data-type="anzhiyu"] {
     --anzhiyu-card-bg: rgba(255, 255, 255, 0.93);
 }
+
+/* 首页文章封面尺寸 */
+#recent-posts .recent-post-info {
+    height: 130px !important;
+}
+#recent-posts .article-meta-wrap {
+    top: 102px !important;
+}
