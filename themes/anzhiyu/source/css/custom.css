@@ -95,12 +95,12 @@ body[data-type="anzhiyu"] #footer {
 body[data-type="anzhiyu"] #footer-bar{
 background: transparent !important;
 }
-/* 添加透明 */
+/* 添加卡片透明 */
 body[data-type="anzhiyu"] {
     --anzhiyu-card-bg: rgba(255, 255, 255, 0.93);
 }
 
-/* 首页文章封面尺寸 */
+/* 调整首页卡片 */
 #recent-posts .recent-post-info {
     height: 130px !important;
 }

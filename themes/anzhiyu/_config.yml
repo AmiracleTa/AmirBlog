@@ -1299,7 +1299,7 @@ inject:
     - <script src="/js/card_visitor.js"></script>
     - <script src="/js/countdown.js"></script>
     - <script src="/js/flink.js"></script>
-    - <script src="/js/cover-loading.js"></script>
+    - <script src="/js/cover_loading.js"></script>
     - <script src="/js/snowflake.js"></script>
     
 # CDN
