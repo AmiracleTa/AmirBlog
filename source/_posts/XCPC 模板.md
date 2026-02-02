@@ -505,6 +505,30 @@ using Flow = Flow_<int>;
 
 ## 数论
 
+### 扩展欧几里得 exgcd & 任意模数逆元
+
+求 ax + by = gcd(a, b) 的一组特解
+
+```cpp
+void exgcd(int a, int b, int& x, int& y){
+    if(b == 0){
+        x = 1, y = 0;
+        return;
+    }
+    int x1, y1;
+    exgcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - (a / b) * y1;
+}
+// p任意 , gcd(a, p) != 1 则无解
+ll inv(int a, int p){
+    int x, y;
+    exgcd(a, p, x, y);
+    int g = a*x + p*y;
+    return g == 1 ? (x % p + p) % p : -1;
+}
+```
+
 ### 反演
 
 #### 子集反演
