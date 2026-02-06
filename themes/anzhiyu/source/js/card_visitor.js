@@ -17,7 +17,7 @@ function distanceKm(lat1, lng1, lat2, lng2) {
     const dLng = toRad(lng2 - lng1);
     const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+    return Math.floor(R * c);
 }
 
 const card = (() => {
@@ -102,8 +102,8 @@ const card = (() => {
                         <span class="ip highlight">
                             ${ip}
                         </span><br>
-                        你现在距离 <span class="name highlight">Amir</span> 约有 <span class="highlight">${distanceKm(Alat, Alng, lat, lng).toPrecision(1)}</span> 公里，<span class="highlight">新年快乐，奇迹将至喵~</span>
-                    </div>
+                        你现在距离 <span class="name highlight">Amir</span> 约有 <span class="highlight">${distanceKm(Alat, Alng, lat, lng)}</span> 公里，<span class="highlight">新年快乐，奇迹将至喵~</span>
+                    </div
                 `;
                 // newcard.innerHTML = `
                 //     <div class="item-title">Hello There!</div>
