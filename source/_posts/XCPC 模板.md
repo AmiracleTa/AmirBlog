@@ -2139,6 +2139,22 @@ using matrix = Matrix<type, size>;
 
 ## 杂项
 
+### int128 运算符重载
+
+```cpp
+ostream& operator << (ostream& os, i128 x){
+    if(x == 0) return os << '0';
+    if(x < 0) os << '-';
+    string s;
+    while(x){
+        s.push_back('0' + x%10 * (x<0?-1:1));
+        x /= 10;
+    }
+    reverse(s.begin(), s.end());
+    return os << s;
+}
+```
+
 ### 随机数生成
 
 > 直接生成 64 位随机数
