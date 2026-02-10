@@ -5,7 +5,9 @@ date: 2025-10-21 15:12:43
 # updated: 2025-12-13 23:34:09
 # updated: 2025-12-16 00:00:00
 # updated: 2025-12-18 00:00:00
-updated: 2026-02-09 00:00:00
+# updated: 2026-02-09 00:00:00
+updated: 2026-02-10 00:00:00
+
 tags:
   - XCPC
   - ACM整理总结
@@ -2154,6 +2156,27 @@ ostream& operator << (ostream& os, i128 x){
     reverse(s.begin(), s.end());
     return os << s;
 }
+```
+
+### ZInt 支持除 0
+
+```cpp
+// 可以处理 inv(0) 的情况
+struct ZInt {
+    ll prod = 1;
+    int cnt = 0;
+    void operator *= (ll x){
+        x %= mo;
+        if(x == 0) cnt++;
+        else prod*=x, prod%=mo;
+    }
+    void operator /= (ll x){
+        x %= mo;
+        if(x == 0) cnt--;
+        else prod*=inv(x), prod%=mo;
+    }
+    ll get(){ return (cnt? 0:prod); }
+};
 ```
 
 ### 随机数生成
