@@ -63,14 +63,22 @@
 
 /* 一图流 */
 body[data-type="anzhiyu"] #web_bg {
-    --anzhiyu-background: url('https://cdn.amiracle.site/%E8%AF%BE%E4%B8%8A%E7%9A%84Gura.jpg');
+    /* --anzhiyu-background: url('https://cdn.amiracle.site/%E8%AF%BE%E4%B8%8A%E7%9A%84Gura.jpg'); */
     /* filter: blur(0.5px) brightness(0.75); */
-    filter: blur(0.2px);
-    width: 125%;
-    height: 125%;
+    /* filter: blur(0.2px); */
+    /* width: 125%; */
+    /* height: 125%; */
+    /* top: -20%; */
+    /* left: -10%; */
+    /* transform: rotate(0deg); */
+
+    --anzhiyu-background: url('https://cdn.amiracle.site/2026%E6%96%B0%E5%B9%B4%E5%BF%AB%E4%B9%90.png');
+    width: 120%;
+    height: 120%;
     top: -20%;
     left: -10%;
     transform: rotate(0deg);
+
 }
 /* 移动端适配 */
 @media (max-width: 768px) {
