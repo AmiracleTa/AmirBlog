@@ -115,3 +115,52 @@ body[data-type="anzhiyu"] {
 #recent-posts .article-meta-wrap {
     top: 102px !important;
 }
+
+/* 钉钉进步体 */
+@font-face {
+    font-family: 'DingTalk JinBuTi';
+    src: url('/fonts/DingTalk-JinBuTi.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 全局字体 */
+body {
+    font-family: "DingTalk JinBuTi", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+}
+/* 文章正文 */
+#article-container {
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(0, 0, 0, 0.5);
+}
+#article-container strong,
+#article-container b {
+    font-weight: normal;
+    text-shadow: 0.3px 0 0 currentColor; 
+}
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    text-shadow: 0.5px 0 0 currentColor;
+    letter-spacing: 0.3px;
+}
+/* 标题放大 10% */
+#article-container h1 {
+    font-size: 2.2em; /* 2em × 1.1 */
+}
+#article-container h2 {
+    font-size: 1.65em; /* 1.5em × 1.1 */
+}
+#article-container h3 {
+    font-size: 1.287em; /* 1.17em × 1.1 */
+}
+#article-container h4 {
+    font-size: 1.1em; /* 1em × 1.1 */
+}
+#article-container h5 {
+    font-size: 0.913em; /* 0.83em × 1.1 */
+}
+#article-container h6 {
+    font-size: 0.737em; /* 0.67em × 1.1 */
+}
