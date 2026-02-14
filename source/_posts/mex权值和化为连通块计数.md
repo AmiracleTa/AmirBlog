@@ -11,7 +11,7 @@ categories: XCPC
 
 #### 题意
 
-给定 n 个节点的树，权值构成一个 [0, n) 的排列，求所有连通块的 mex 权值和
+给定 n 个节点的树，点权构成一个 [0, n) 的排列，求所有连通块的 mex 权值和
 
 #### 思路
 
@@ -41,7 +41,7 @@ lst \gets lst \times \prod_{u\in path} inv(dp[u]+1) dp[u]
 \end{align*}
 $$
 
-将经过的点都变成必选点，更新 ans，`ans += lst`
+这样就将经过的点都变成了必选点，之后更新 ans，`ans += lst`
 
 时间复杂度 ${O(nlog(mod))}$
 
