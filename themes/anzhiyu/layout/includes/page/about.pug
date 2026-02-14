@@ -219,7 +219,8 @@ if site.data.about
             .content-bottom
               .tips=music_bottom
 
-      if page.content
+      - const strippedContent = page.content ? page.content.replace(/<[^>]+>/g, '').replace(/\s/g, '').length : 0
+      if strippedContent > 0
         .author-content
           .create-site-post.author-content-item.single
             != page.content
