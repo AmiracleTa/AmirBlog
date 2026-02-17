@@ -13,6 +13,7 @@ tags:
   - ACM整理总结
 categories: XCPC
 cover: https://cdn.amiracle.site/Nekoha%20Shizuku.png
+sticky: true
 ---
 
 {% note info modern %}

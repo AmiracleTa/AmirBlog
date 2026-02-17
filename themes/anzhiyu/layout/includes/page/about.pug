@@ -29,7 +29,7 @@ if site.data.about
         .author-content-item.myInfoAndSayHello
           .title1 你好，很高兴认识你👋
           .title2
-            | 我叫 
+            | 我是 
             span.inline-word=aboutName
           .title1=aboutDescription
         .aboutsiteTips.author-content-item
@@ -223,6 +223,7 @@ if site.data.about
       if strippedContent > 0
         .author-content
           .create-site-post.author-content-item.single
+            .author-content-item-tips 心路历程
             != page.content
         
       - let rawData = item.reward_list

@@ -110,10 +110,7 @@ body[data-type="anzhiyu"] {
 
 /* 调整首页卡片 */
 #recent-posts .recent-post-info {
-    height: 130px !important;
-}
-#recent-posts .article-meta-wrap {
-    top: 102px !important;
+    height: 135px !important;
 }
 
 /* 钉钉进步体 */
@@ -129,6 +126,10 @@ body[data-type="anzhiyu"] {
 body {
     font-family: "DingTalk JinBuTi", "PingFang SC", "Microsoft YaHei", sans-serif !important;
 }
+/* 向往之处，便是归途 */
+.banners-title-big {
+    color: rgb(76, 73, 72) !important;
+}
 /* 文章正文 */
 #article-container {
     font-size: 16px;
@@ -140,7 +141,7 @@ body {
     font-weight: normal;
     text-shadow: 0.3px 0 0 currentColor; 
 }
-h1, h2, h3, h4, h5, h6 {
+#article-container :is(h1, h2, h3, h4, h5, h6) {
     font-weight: normal;
     text-shadow: 0.5px 0 0 currentColor;
     letter-spacing: 0.3px;
