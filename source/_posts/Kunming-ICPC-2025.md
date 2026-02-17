@@ -7,8 +7,8 @@ tags:
   - dp
   - 容斥
   - 期望
-cover: https://cdn.amiracle.site/cutee.jpg
 categories: XCPC
+cover: https://cdn.amiracle.site/cutee.jpg
 ---
 
 

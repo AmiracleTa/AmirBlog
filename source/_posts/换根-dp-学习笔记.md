@@ -5,6 +5,7 @@ updated: 2025-12-11 12:07:21
 tags:
     - XCPC
     - dp
+categories: XCPC
 ---
 
 {% note info simple %}

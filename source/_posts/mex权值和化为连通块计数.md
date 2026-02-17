@@ -1,10 +1,12 @@
 ---
 title: mex 权值和化为连通块计数
 date: 2026-02-10 10:35:02
+updated: 2026-02-14 17:06:00
 tags:
   - XCPC
-cover: https://cdn.amiracle.site/ATRI2.jpg
+  - 题解
 categories: XCPC
+cover: https://cdn.amiracle.site/ATRI2.jpg
 ---
 
 ### [牛客寒假集训营 4](https://ac.nowcoder.com/acm/contest/120562/D) D-数字积木 题解
