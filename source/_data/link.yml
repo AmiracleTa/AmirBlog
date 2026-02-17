@@ -31,7 +31,7 @@
       siteshot: https://img.zhheo.com/i/67d8fb3c51399.webp
     # - name: amiracle
     #   link: https://amiracle.site
-    #   avatar: https://cdn.amiracle.site/sm_avatar(1).jpg
+    #   avatar: https://cdn.amiracle.site/avatar_n.jpg
     #   descr: 向往之处，便是归途
     #   siteshot: https://npm.elemecdn.com/anzhiyu-theme-static@1.1.6/img/hexo.anheyu.com.jpg
     #   color: vip
@@ -50,7 +50,7 @@
 
     - name: Amiracle
       link: https://amiracle.site/
-      avatar: https://cdn.amiracle.site/sm_avatar(1).jpg
+      avatar: https://cdn.amiracle.site/avatar_n.jpg
       descr: 向往之处，便是归途
       recommend: false
 
