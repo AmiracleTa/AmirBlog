@@ -6,7 +6,8 @@ date: 2025-10-21 15:12:43
 # updated: 2025-12-16 00:00:00
 # updated: 2025-12-18 00:00:00
 # updated: 2026-02-09 00:00:00
-updated: 2026-02-10 00:00:00
+# updated: 2026-02-10 00:00:00
+updated: 2026-03-03 10:25:00
 
 tags:
   - XCPC
@@ -2177,6 +2178,43 @@ struct ZInt {
         else prod*=inv(x), prod%=mo;
     }
     ll get(){ return (cnt? 0:prod); }
+};
+```
+
+### 取模类(极简)
+
+来自 **ysj**
+
+```cpp
+struct Z {
+    ll x;
+    Z(ll _x = 0) : x(_x % mo) { if(x < 0) x += mo; }
+    Z operator + (Z o) { return x + o.x; }
+    Z operator - (Z o) { return x - o.x; }
+    Z operator * (Z o) { return x * o.x; }
+    Z operator / (Z o) { return x * inv(o.x); }
+};
+```
+
+### 取模类(常数优化版)
+
+```cpp
+struct Z {
+    ll x;
+    Z(ll _x = 0) : x(_x) {
+        if(-mo<=x && x<2*mo){
+            if(x < 0) x += mo;
+            if(x >= mo) x -= mo;
+        }
+        else{
+            x %= mo;
+            if(x<0) x += mo;
+        }
+    }
+    Z operator + (Z o) { return x + o.x; }
+    Z operator - (Z o) { return x - o.x; }
+    Z operator * (Z o) { return x * o.x; }
+    Z operator / (Z o) { return x * inv(o.x); }
 };
 ```
 
