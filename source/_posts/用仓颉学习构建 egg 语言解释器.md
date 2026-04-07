@@ -1,5 +1,10 @@
 ---
 title: 用仓颉学习构建 egg 语言解释器
+date: 2026-04-06 14:58:51
+updated: 2026-04-07 15:01:48
+tags:
+  - 仓颉
+cover: https://cdn.amiracle.site/ATRI3.jpg
 ---
 
 ## 前言
