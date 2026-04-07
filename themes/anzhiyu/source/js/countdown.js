@@ -1,7 +1,7 @@
 const CountdownTimer = (() => {
     const config = {
-        targetDate: "2026-04-05",
-        targetName: "清明",
+        targetDate: "2026-05-01",
+        targetName: "劳动节",
         units: {
             day: { text: "今日", unit: "小时" },
             week: { text: "本周", unit: "天" },
