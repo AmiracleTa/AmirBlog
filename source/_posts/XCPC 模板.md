@@ -1089,30 +1089,6 @@ void sieve(){
 }
 ```
 
-### 极角排序(整数运算，无精度问题)
-
-```cpp
-ll cross(int x1, int y1, int x2, int y2){ // 两向量叉积
-    return 1ll * x1 * y2 - 1ll * y1 * x2;
-}
-
-    // sort(a.begin(), a.end(), rad); // 精度可能不够高
-    auto quad = [](int x, int y){ // 第几象限 , 逆时针左闭右开
-        if(x > 0 && y >= 0) return 0;
-        if(x <= 0 && y > 0) return 1;
-        if(x < 0 && y >= 0) return 2;
-        return 3;
-    };
-    // 整数极角排序 , 完全无精度问题
-    sort(a.begin(), a.end(), [&](auto x, auto y){
-        auto [x1, y1] = x;
-        auto [x2, y2] = y;
-        int qdx = quad(x1, y1), qdy = quad(x2, y2);
-        if(qdx == qdy) return cross(x1, y1, x2, y2)>0; // 期待是逆时针
-        return qdx < qdy;
-    });
-```
-
 ### OTHER
 
 #### $min$, $max$ 绝对值的恒等式
@@ -1167,6 +1143,37 @@ ${x = x_0 + k \frac{p}{g}} \quad k=0,1,2\cdots g-1$
 n mod i = n - ${\lfloor{\frac{n}{i}}\rfloor i}$
 
 <div style="page-break-after:always"></div>
+
+## 寄算几何
+
+### 极角排序(整数运算，无精度问题)
+
+```cpp
+ll cross(int x1, int y1, int x2, int y2){ // 两向量叉积
+    return 1ll * x1 * y2 - 1ll * y1 * x2;
+}
+    // sort(a.begin(), a.end(), rad); // 精度可能不够高
+{
+    auto quad = [](int x, int y){ // 第几象限 , 逆时针左闭右开
+        if(x > 0 && y >= 0) return 0;
+        if(x <= 0 && y > 0) return 1;
+        if(x < 0 && y >= 0) return 2;
+        return 3;
+    };
+    // 整数极角排序 , 完全无精度问题
+    sort(a.begin(), a.end(), [&](auto x, auto y){
+        auto [x1, y1] = x;
+        auto [x2, y2] = y;
+        int qdx = quad(x1, y1), qdy = quad(x2, y2);
+        if(qdx == qdy) return cross(x1, y1, x2, y2)>0; // 期待是逆时针
+        return qdx < qdy;
+    });
+}
+```
+
+### 任意多边形面积 (高斯面积公式)
+
+$$\text{Area} = \frac{1}{2} \left| \sum_{i=1}^{n} (x_i \cdot y_{i+1} - x_{i+1} \cdot y_i) \right|$$
 
 ## 数据结构
 
