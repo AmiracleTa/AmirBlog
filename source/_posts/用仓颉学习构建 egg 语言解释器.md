@@ -137,17 +137,17 @@ AST 构建完成，即得到这个 **ApplyExpression** 后，程序会调用 **A
 
 ## 仓颉语法简记
 
-*仓颉没有高亮, 借用下 java 的高亮, 逃()*
+*仓颉没有高亮, 借用下 java 的高亮, 逃()* ${\quad}$ **update: 已支持**
 
 **func** 定义函数
-```java
+```cangjie
 func add(a: Int64, b: Int64): Int64 {
     return a + b
 }
 ```
 
 **class** 定义类，**interface** 定义接口，**<:** 实现接口或继承
-```java
+```cangjie
 interface Expression {
     func evaluate(env: Env): Object
 }
@@ -157,27 +157,27 @@ class ValueExpression <: Expression {
 ```
 
 **let** 声明不可变变量，**var** 声明可变变量
-```java
+```cangjie
 let name = "egg"
 var pos = 0
 ```
 **let** 和 **const** 的区别在于，**const** 修饰的变量的值在编译期确定
 
 **is** 类型判断，**as** 类型转换
-```java
+```cangjie
 if(value is EggFunction) {
     let fn = (value as EggFunction).getOrThrow()
 }
 ```
 
 **Option<T>** 表示可能有值，也可能没有值，用 **getOrThrow** 取值，无值则抛出异常
-```java
+```cangjie
 let value = env.get(name)
 return value.getOrThrow({=> Exception("变量不存在")})
 ```
 
 **match** 模式匹配，类似 **switch**，但更灵活，不仅能匹配值，还能匹配类型或结构
-```java
+```cangjie
 match (value) {
     case str: Value<String> => str.value
     case num: Value<Float64> => "${num.value}"
