@@ -44,3 +44,66 @@ if $highlight_theme != false
       padding-right: 10px
       padding-left: 10px
       width: 100%
+
+    if $highlight_line_number
+      $shiki-gutter-width = 2.1rem
+
+      pre.shiki
+        position: relative
+        background: transparent !important
+        background-color: transparent !important
+        padding-right: 0
+        padding-left: 0
+        padding-bottom: 0
+
+        &:before
+          position: absolute
+          top: 0
+          bottom: 0
+          left: 0
+          box-sizing: border-box
+          width: var(--shiki-gutter-width, $shiki-gutter-width)
+          content: ''
+
+          if $highlight_theme == 'light' || ($highlight_theme == 'mac light')
+            background: var(--anzhiyu-secondbg)
+            background-color: var(--anzhiyu-secondbg)
+            border-right: var(--style-border-always)
+          else
+            background: var(--hlexpand-bg)
+
+        code
+          display: block
+          position: relative
+          z-index: 1
+          counter-reset: line
+          white-space: normal
+
+        .line
+          display: block
+          position: relative
+          padding-right: 1rem
+          padding-left: calc(var(--shiki-gutter-width, $shiki-gutter-width) + .5rem)
+          white-space: pre
+          line-height: 1.57
+
+          &:empty
+            &:after
+              content: ' '
+
+          &:before
+            position: absolute
+            top: 0
+            bottom: 0
+            left: 0
+            display: flex
+            align-items: center
+            justify-content: flex-end
+            box-sizing: border-box
+            width: var(--shiki-gutter-width, $shiki-gutter-width)
+            padding-right: .6rem
+            padding-left: .5rem
+            color: var(--hlnumber-color)
+            content: counter(line)
+            counter-increment: line
+            user-select: none

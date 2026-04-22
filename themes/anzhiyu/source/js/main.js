@@ -235,14 +235,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const { highlightCopy, highlightLang, highlightHeightLimit, plugin } = highLight;
     const isHighlightShrink = GLOBAL_CONFIG_SITE.isHighlightShrink;
     const isShowTool = highlightCopy || highlightLang || isHighlightShrink !== undefined;
+    const isPrismLike = plugin === "prismjs" || plugin === "shiki";
     const $figureHighlight =
       plugin === "highlight.js"
         ? document.querySelectorAll("figure.highlight")
-        : document.querySelectorAll('pre[class*="language-"]');
+        : plugin === "shiki"
+          ? document.querySelectorAll("pre.shiki")
+          : document.querySelectorAll('pre[class*="language-"]');
 
     if (!((isShowTool || highlightHeightLimit) && $figureHighlight.length)) return;
 
-    const isPrismjs = plugin === "prismjs";
     const highlightShrinkClass = isHighlightShrink === true ? "closed" : "";
     const highlightShrinkEle =
       isHighlightShrink !== undefined
@@ -280,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
       $buttonParent.classList.add("copy-true");
       const selection = window.getSelection();
       const range = document.createRange();
-      const preCodeSelector = isPrismjs ? "pre code" : "table .code pre";
+      const preCodeSelector = isPrismLike ? "pre code" : "table .code pre";
       range.selectNodeContents($buttonParent.querySelectorAll(`${preCodeSelector}`)[0]);
       selection.removeAllRanges();
       selection.addRange(range);
@@ -301,6 +303,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const expandCode = function () {
       this.classList.toggle("expand-done");
+    };
+
+    const ensureHighlightFigure = item => {
+      const parent = item.parentNode;
+      if (parent?.tagName === "FIGURE" && parent.classList.contains("highlight")) {
+        return parent;
+      }
+
+      anzhiyu.wrap(item, "figure", { class: "highlight" });
+      return item.parentNode;
     };
 
     const createEle = (lang, item, service) => {
@@ -329,15 +341,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
 
-    if (isPrismjs) {
+    if (isPrismLike) {
       $figureHighlight.forEach(item => {
+        ensureHighlightFigure(item);
         if (highlightLang) {
           const langName = item.getAttribute("data-language") || "Code";
           const highlightLangEle = `<div class="code-lang">${langName}</div>`;
-          anzhiyu.wrap(item, "figure", { class: "highlight" });
           createEle(highlightLangEle, item);
         } else {
-          anzhiyu.wrap(item, "figure", { class: "highlight" });
           createEle("", item);
         }
       });

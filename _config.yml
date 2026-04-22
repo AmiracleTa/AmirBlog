@@ -43,7 +43,20 @@ render_drafts: false
 post_asset_folder: false
 relative_link: false
 future: true
-syntax_highlighter: highlight.js
+syntax_highlighter: shiki
+shiki:
+  themes:
+    light:
+      name: cangjie-light
+      path: ./shiki-themes/cangjie-theme-light.json
+    dark:
+      name: cangjie-dark
+      path: ./shiki-themes/cangjie-theme-dark.json
+  autoInjectCSS: selector
+  darkSelector: "[data-theme='dark']"
+  languages:
+    - name: cangjie
+      path: ./shiki-languages/cangjie.tmLanguage.json
 highlight:
   line_number: true
   auto_detect: false
