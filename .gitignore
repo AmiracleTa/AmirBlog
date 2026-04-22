@@ -6,3 +6,9 @@ node_modules/
 public/
 .deploy*/
 _multiconfig.yml
+/docs/
+/dev*.js
+/dev*.py
+/source/_drafts/
+/.codex
+/.npmrc
