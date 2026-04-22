@@ -7,7 +7,8 @@ date: 2025-10-21 15:12:43
 # updated: 2025-12-18 00:00:00
 # updated: 2026-02-09 00:00:00
 # updated: 2026-02-10 00:00:00
-updated: 2026-03-03 10:25:00
+# updated: 2026-03-03 10:25:00
+updated: 2026-04-21 17:31:26
 
 tags:
   - XCPC
@@ -119,17 +120,44 @@ sticky: true
     };
 ```
 
+#### Tarjan 离线 O(1)
+
+```cpp
+void solve(){
+    vector<vector<pii>> query(n + 1);
+    for(int i=1; i<=q; i++){
+        int u, v;
+        cin >> u >> v;
+        query[u].push_back({v, i});
+        query[v].push_back({u, i});
+    }
+
+    vector<int> ans(q + 1);
+    vector<bool> vis(n + 1);
+    auto tarjan = [&](auto&& self, int u) -> void {
+        vis[u] = true;
+        for(int v : gra[u]) if(!vis[v]) {
+            self(self, v);
+            dsu.merge(u, v);
+        }
+        for(auto [v, id] : query[u]) if(vis[v]) {
+            ans[id] = dsu.find(v);
+        }
+    };
+    tarjan(tarjan, r); // r 为根
+
+    for(int i=1; i<=q; i++){
+        cout << ans[i] << '\n';
+    }
+}
+```
+
 ### 负权图最短路 (判负环)
 
 #### Bellman-Ford **$O(n \cdot m)$**
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using pii = pair<int, int>;
-
-constexpr ll inf = 1e18;
+constexpr ll inf = 3e18;
 
 void solve(){
     int n, m;
@@ -141,8 +169,7 @@ void solve(){
         gra[u].push_back({v, w});
     }
 
-    vector<ll> dis(n + 1, inf);
-    dis[1] = 0;
+    vector<ll> dis(n + 1); // 判全图负环
     for(int k=0; k<n-1; k++){ // 尝试 n - 1 轮松弛
         for(int i=1; i<=n; i++){
             for(auto [v, w] : gra[i]){
@@ -158,40 +185,16 @@ void solve(){
         }
     }
 }
-
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int t = 1; cin >> t;
-    while(t--) solve();
-    
-    return 0;
-}
 ```
 
 #### SPFA **$O(k \cdot m)$**
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using pii = pair<int, int>;
-
 constexpr ll inf = 3e18;
 
 void solve(){
-    int n, m;
-    cin >> n >> m;
-    vector<vector<pii>> gra(n + 1);
-    for(int i=1; i<=m; i++){
-        int u, v, w;
-        cin >> u >> v >> w;
-        gra[u].push_back({v, w});
-    }
-
     bool neg = false;
-    int s = 1; // 源点 // 可能要建超级源点
+    int s = 1; // 判断是否存在从 s 出发能到达的负环, 将所有点入队可判断整图负环
     vector<bool> inq(n + 1);
     vector<int> cnt(n + 1);
     vector<ll> dis(n + 1, inf);
@@ -216,223 +219,217 @@ void solve(){
         }
     }
 }
-
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int t = 1; cin >> t;
-    while(t--) solve();
-    
-    return 0;
-}
 ```
 
 ### Tarjan 求连通分量
 
-#### 点双连通分量
+#### 强连通分量 SCC (有向图)
 
-> 点双个数 & 每个点双的节点
+strongly connected component
+
+缩点
 
 ```cpp
-struct V_DCC {
-    int n;
-    vector<vector<int>> ver, col; // 颜色 i 的点集 col[i]
-    vector<int> dfn, low, S;
-    int now, cnt;
-    vector<bool> point; // 记录是否为割点
+struct SCC {
+    int n, ccol, cdfn;
+    vector<vector<int>> gra;
+    vector<int> dfn, low, col, stk;
 
-    V_DCC(int n) : n(n) {
-        ver.resize(n + 1);
-        dfn.resize(n + 1);
-        low.resize(n + 1);
-        col.resize(2 * n + 1);
-        point.resize(n + 1);
-        S.clear();
-        cnt = now = 0;
+    #define cmin(x, y) x = min(x, y)
+
+    void init(int n_, auto& gr){
+        n = n_; gra = gr;
+        ccol = cdfn = 0;
+        dfn = low = col = vector<int>(n + 1);
+        stk.clear();
     }
-    void add(int x, int y) {
-        if (x == y) return; // 手动去除重边
-        ver[x].push_back(y);
-        ver[y].push_back(x);
+    void tarjan(int u){
+        dfn[u] = low[u] = ++cdfn;
+        stk.push_back(u);
+        for(int v : gra[u]){
+            if(!dfn[v]){ // 树边
+                tarjan(v);
+                cmin(low[u], low[v]);
+            }
+            else if(!col[v]){ // 栈内横叉边 & 返祖边
+                cmin(low[u], dfn[v]);
+            }
+        }
+        if(dfn[u] == low[u]){ // root
+            ccol++;
+            while(true){
+                int x = stk.back(); stk.pop_back();
+                col[x] = ccol;
+                if(x == u) break;
+            }
+        }
     }
-    void tarjan(int x, int root) {
-        low[x] = dfn[x] = ++now;
-        S.push_back(x);
-        if (x == root && !ver[x].size()) { // 特判孤立点
-            ++cnt;
-            col[cnt].push_back(x);
+    void work(){ // SCC 染色
+        for(int i=1; i<=n; i++){
+            if(!dfn[i]){
+                tarjan(i);
+            }
+        }
+    }
+    auto rebuild(){ // 缩点
+        work();
+        vector<vector<int>> ngra(ccol + 1);
+        for(int i=1; i<=n; i++){
+            for(int v : gra[i]){
+                if(col[i] != col[v]){
+                    ngra[col[i]].push_back(col[v]);
+                }
+            }
+        }
+        return ngra;
+    }
+};
+```
+
+#### 点双连通分量 VDCC (无向图)
+
+vetex double connected component
+
+点双个数 & 每个点双的节点
+
+```cpp
+struct VDCC {
+    int n, ccol, cdfn; // .. , VDCC 个数 , ..
+    vector<vector<int>> gra, col; // 原图 , VDCC
+    vector<int> dfn, low, stk;
+    vector<bool> point; // 割点
+
+    #define cmin(x, y) x = min(x, y)
+
+    void init(int n_, auto& gr){ // gr 不能有自环
+        n = n_; gra = gr;
+        ccol = cdfn = 0;
+        dfn = low = vector<int>(n + 1);
+        col = vector<vector<int>>(n + 1);
+        stk.clear();
+        point = vector<bool>(n + 1);
+    }
+    void tarjan(int root, int u){
+        dfn[u] = low[u] = ++cdfn;
+
+        if(u == root && gra[u].empty()){ // 特判孤立点
+            col[++ccol].push_back(u);
             return;
         }
 
-        int flag = 0;
-        for (auto y : ver[x]) {
-            if (!dfn[y]) {
-                tarjan(y, root);
-                low[x] = min(low[x], low[y]);
-                if (dfn[x] <= low[y]) {
-                    flag++;
-                    if (x != root || flag > 1) {
-                        point[x] = true; // 标记为割点
+        stk.push_back(u);
+        int cnt = 0;
+        for(int v : gra[u]){
+            if(!dfn[v]){
+                tarjan(root, v);
+                cmin(low[u], low[v]);
+                if(dfn[u] <= low[v]){
+                    cnt++; ccol++;
+                    if(u!=root || cnt>=2) point[u]=true; // 割点
+
+                    col[ccol].push_back(u);
+                    while(true){
+                        int x = stk.back(); stk.pop_back();
+                        col[ccol].push_back(x);
+                        if(x == v) break;
                     }
-                    int pre = 0;
-                    cnt++;
-                    do {
-                        pre = S.back();
-                        col[cnt].push_back(pre);
-                        S.pop_back();
-                    } while (pre != y);
-                    col[cnt].push_back(x);
-                }
-            } else {
-                low[x] = min(low[x], dfn[y]);
-            }
-        }
-    }
-    pair<int, vector<vector<int>>> rebuild() { // [新图的顶点数量, 新图]
-        work();
-        vector<vector<int>> adj(cnt + 1);
-        for (int i = 1; i <= cnt; i++) {
-            if (!col[i].size()) { // 注意，孤立点也是 V-DCC
-                continue;
-            }
-            for (auto j : col[i]) {
-                if (point[j]) { // 如果 j 是割点
-                    adj[i].push_back(point[j]);
-                    adj[point[j]].push_back(i);
                 }
             }
+            else cmin(low[u], dfn[v]);
         }
-        return {cnt, adj};
     }
-    void work() {
-        for (int i = 1; i <= n; ++i) { // 避免图不连通
-            if (!dfn[i]) {
+    void work(){ // VDCC 染色
+        for(int i=1; i<=n; i++){
+            if(!dfn[i]){
                 tarjan(i, i);
             }
         }
     }
-};
-
-void solve(){
-    int n, m;
-    cin >> n >> m;
-    
-    V_DCC vdcc(n);
-    for(int i=0; i<m; i++){
-        int u, v;
-        cin >> u >> v;
-        vdcc.add(u, v);
-        vdcc.add(v, u);
-    }
-
-    vdcc.work();
-    cout << vdcc.cnt << '\n';
-    for(int i=1; i<=vdcc.cnt; i++){
-        cout << vdcc.col[i].size();
-        for(int x : vdcc.col[i]){
-            cout << " " << x;
+    auto rebuild(){ // block cut tree
+        work();
+        vector<vector<int>> tree(n + ccol + 1);
+        for(int i=1; i<=ccol; i++){
+            for(int v : col[i]){
+                tree[n+i].push_back(v);
+                tree[v].push_back(n+i);
+            }
         }
-        cout << '\n';
+        return tree;
     }
-}
+};
 ```
 
-#### 边双连通分量
+#### 边双连通分量 EDCC (无向图)
 
 > 边双个数 & 每个边双的节点
 
 ```cpp
 struct EDCC {
-    int n, m, now, cnt;
-    vector<vector<array<int, 2>>> ver;
-    vector<int> dfn, low, col, S;
-    set<array<int, 2>> bridge, direct; // 如果不需要，删除这一部分可以得到一些时间上的优化
+    int n, ccol, cdfn; // .. , EDCC 个数 , ...
+    vector<vector<int>> gra;
+    vector<int> dfn, low, col, stk;
+    set<pii> bridge;
 
-    EDCC(int n) : n(n), low(n + 1), ver(n + 1), dfn(n + 1), col(n + 1) {
-        m = now = cnt = 0;
+    #define cmin(x, y) x = min(x, y)
+
+    void init(int n_, auto& gr){
+        n = n_; gra = gr;
+        ccol = cdfn = 0;
+        dfn = low = col = vector<int>(n + 1);
+        stk.clear();
+        bridge.clear();
     }
-    void add(int x, int y) { // 和 scc 相比多了一条连边
-        ver[x].push_back({y, m});
-        ver[y].push_back({x, m++});
-    }
-    void tarjan(int x, int fa) {
-        dfn[x] = low[x] = ++now;
-        S.push_back(x);
-        for (auto &[y, id] : ver[x]) {
-            if (!dfn[y]) {
-                direct.insert({x, y});
-                tarjan(y, id);
-                low[x] = min(low[x], low[y]);
-                if (dfn[x] < low[y]) {
-                    bridge.insert({x, y});
+    void tarjan(int u, int fa){
+        dfn[u] = low[u] = ++cdfn;
+        stk.push_back(u);
+
+        bool flg = false; // 处理重边
+        for(int v : gra[u]){
+            if(v == fa && !flg){
+                flg = true;
+                continue;
+            }
+            if(!dfn[v]){ // 树边
+                tarjan(v, u);
+                cmin(low[u], low[v]);
+                if(low[v] > dfn[u]){ 
+                    bridge.insert({min(u,v), max(u,v)});
                 }
-            } else if (id != fa && dfn[y] < dfn[x]) {
-                direct.insert({x, y});
-                low[x] = min(low[x], dfn[y]);
+            }
+            else{
+                cmin(low[u], dfn[v]);
             }
         }
-        if (dfn[x] == low[x]) {
-            int pre;
-            cnt++;
-            do {
-                pre = S.back();
-                col[pre] = cnt;
-                S.pop_back();
-            } while (pre != x);
+        
+        if(dfn[u] == low[u]){
+            ccol++;
+            while(true){
+                int x = stk.back(); stk.pop_back();
+                col[x] = ccol;
+                if(x == u) break;
+            }
         }
     }
-    auto work() {
-        for (int i = 1; i <= n; i++) { // 避免图不连通
-            if (!dfn[i]) {
+    void work(){ // EDCC 染色
+        for(int i=1; i<=n; i++){
+            if(!dfn[i]){
                 tarjan(i, 0);
             }
         }
-        /**
-         * @param cnt 新图的顶点数量, adj 新图, col 旧图节点对应的新图节点
-         * @param siz 旧图每一个边双中点的数量
-         * @param bridge 全部割边, direct 非割边定向
-         */
-        vector<int> siz(cnt + 1);
-        vector<vector<int>> adj(cnt + 1); // 压缩图
-        for (int i = 1; i <= n; i++) {
-            siz[col[i]]++;
-            for (auto &[j, id] : ver[i]) {
-                int x = col[i], y = col[j];
-                if (x != y) {
-                    adj[x].push_back(y);
+    }
+    auto rebuild(){ // bridge tree
+        work();
+        vector<vector<int>> tree(ccol + 1);
+        for(int i=1; i<=n; i++){
+            for(int v : gra[i]){
+                if(col[i] != col[v]){
+                    tree[col[i]].push_back(col[v]); 
                 }
             }
         }
-        return tuple{cnt, adj, col, siz};
+        return tree;
     }
-
 };
-
-void solve() {
-    int n, m;
-    cin >> n >> m;
-    EDCC edcc(n);
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        edcc.add(u, v); // 只加一次
-    }
-
-    edcc.work();
-    vector<vector<int>> col(edcc.cnt+1);
-    for(int i=1; i<=n; i++){
-        col[edcc.col[i]].push_back(i);
-    }
-    cout << edcc.cnt << '\n';
-    for(int i=1; i<=edcc.cnt; i++){
-        cout << col[i].size();
-        for(int x : col[i]){
-            cout << " " << x;
-        }
-        cout << '\n';
-    }
-}
 ```
 
 ### 最大流-最小割
@@ -515,21 +512,21 @@ using Flow = Flow_<int>;
 求 ax + by = gcd(a, b) 的一组特解
 
 ```cpp
-void exgcd(int a, int b, int& x, int& y){
+void exgcd(ll a, ll b, ll& x, ll& y){
     if(b == 0){
         x = 1, y = 0;
         return;
     }
-    int x1, y1;
+    ll x1, y1;
     exgcd(b, a % b, x1, y1);
     x = y1;
     y = x1 - (a / b) * y1;
 }
 // p任意 , gcd(a, p) != 1 则无解
-ll inv(int a, int p){
-    int x, y;
+ll inv(ll a, ll p){
+    ll x, y;
     exgcd(a, p, x, y);
-    int g = a*x + p*y;
+    ll g = a*x + p*y;
     return g == 1 ? (x % p + p) % p : -1;
 }
 ```
@@ -709,7 +706,7 @@ int main(){
 #include <bits/stdc++.h>
 using namespace std;
 using ll = int64_t;
-using ull = uint64_t
+using ull = uint64_t;
 using u128 = __uint128_t;
 /*
   大模数 9223372036737335297 ptr = 3
@@ -823,7 +820,7 @@ ll primitive_root(){
 
 $$
 \begin{align*}
-C_k = \sum_{i \oplus j = k} f[i] \cdot g[i]  
+C_k = \sum_{i \oplus j = k} f[i] \cdot g[j]
 \end{align*}
 $$
 
@@ -1074,7 +1071,8 @@ vector<int> pri, mi_fct;
 vector<bool> prime;
 void sieve(){
     int n = 1e8;
-    mi_fct.resize(n + 1);
+    mi_fct = vector<int>(n + 1);
+    prime = vector<bool>(n + 1, true);
     prime[0] = prime[1] = false;
 
     for(int i=2; i<=n; i++){
@@ -1111,7 +1109,7 @@ $$
 #### 平方和公式
 
 $$
-\sum i^2=\frac{n(n+1)(2n+1)}{2}
+\sum_{i=1}^{n} i^2=\frac{n(n+1)(2n+1)}{6}
 $$
 
 #### 组合数常用公式
@@ -1224,22 +1222,22 @@ struct BIT{
 struct DSU{
     vector<int> f, sz;
     void init(int n){
-        sz.resize(n + 1, 1);
-        f.resize(n + 1);
+        f = vector<int>(n + 1);
+        sz = vector<int>(n + 1, 1);
         iota(f.begin(), f.end(), 0);
     }
-    int find(int x){ // 判相同要用 find (same)
+    int find(int x){
         while(x != f[x]) x = f[x] = f[f[x]];
         return x;
     }
-    bool merge(int x, int y){ // 左 <- 右
+    bool merge(int x, int y){ // x <- y
         x = find(x), y = find(y);
         if(x == y) return false;
         f[y] = x;
         sz[x] += sz[y];
         return true;
     }
-    bool same(int x, int y){
+    bool same(int x, int y){ // 判同一连通块
         return find(x) == find(y);
     }
 };
@@ -1273,7 +1271,6 @@ struct ST{
         int ans = max(f[l][x], f[r-(1<<x)+1][x]);
         return ans;
     }
-    
 };
 ```
 
@@ -1317,23 +1314,17 @@ struct SegTree{
         build(1, 0, n);
     }
 
-    // lazy 区间信息
-    void lazy(int p, int k, ll v){ // lazy(int p, ...)
-        // tag[p] = ..
-        // info[p] = ..
-    }
     // merge 区间信息
     void pull(int p){
         // info[p] <- merge(info[lp], info[rp])
     }
     // push 区间标记
     void push(int p, int l, int r){
-        // if( no tag ) return;
+        // if( no tag ) return
         int mid = l + r >> 1;
-        lazy(lp, lk, info[p]);
-        lazy(rp, rk, info[p]);
-        // 删除标记
-        // init tag[p]
+        // lazy(lp, tag[p])
+        // lazy(rp, tag[p])
+        // del tag[p]
     }
 
     void build(int p, int l, int r){
@@ -1341,7 +1332,7 @@ struct SegTree{
             info[p] = a[l];
             return;
         }
-        int mid = (l + r) >> 1;
+        int mid = l + r >> 1;
         build(lp, l, mid);
         build(rp, mid+1, r);
         pull(p);
@@ -1349,7 +1340,7 @@ struct SegTree{
 
     void update(int p, int l, int r, int x, int y, ll v){ // 区间修改
         if(x <= l && r <= y){
-            lazy(p, r - l + 1, v);
+            // lazy(p, tag[p])
             return;
         }
         int mid = l + r >> 1;
@@ -1360,7 +1351,7 @@ struct SegTree{
     }
     void update(int p, int l, int r, int x, ll v){ // 单点修改
         if(l == r){
-            info[p] += v; // +, *, 赋值
+            // update info[p]
             return;
         }
         int mid = l + r >> 1;
@@ -1373,9 +1364,8 @@ struct SegTree{
         if(x <= l && r <= y){
             return info[p];
         }
-        // init ans 为 单位元
-        ll ans = 0; 
-        int mid = (l + r) >> 1;
+        // init ans -> 单位元
+        int mid = l + r >> 1;
         push(p, l, r);
 
         // if(x <= mid) merge(ans, query(lp, l, mid, x, y));
@@ -1438,7 +1428,17 @@ struct SegTree{
         build(rp, mid+1, r);
         pull(p);
     }
-    
+        
+    void update(int p, int l, int r, int x, ll v){ // 单点修改
+        if(l == r){
+            sum[p] = a[l];
+            return;
+        }
+        int mid = (l + r) >> 1;
+        if(x <= mid) update(lp, l, mid, x, v);
+        else update(rp, mid+1, r, x, v);
+        pull();
+    }
     void update(int p, int l, int r, int x, int y, ll v){ // 区间修改
         if(x <= l && r <= y){
             lazy(p, r - l + 1, v);
@@ -1741,13 +1741,12 @@ struct SegTree{ // 0-idx
         return ans;
     }
 
-    void update(int x, ll v){ update(1, 0, n, x, v); } // 单点修改
     void update(int L, int R, ll v){ update(1, 0, n, L, R, v); } // 区间更新
     ll query(int L, int R){ return query(1, 0, n, L, R); } // 区间查询
 };
 ```
 
-> 区间最值更新 ( ai=max(ai, v) ) | 区间最值
+> 区间最值更新 ( ai=min(ai, v) ) | 区间最值
 
 ```cpp
 struct SegTree{
@@ -2232,7 +2231,7 @@ struct Z {
 ```cpp
 ull seed = chrono::steady_clock::now().time_since_epoch().count();
 mt19937_64 rng(seed);
-ull x = rng()
+ull x = rng();
 ```
 
 > [lo, hi] 范围随机数
