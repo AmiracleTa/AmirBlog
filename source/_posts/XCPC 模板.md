@@ -432,7 +432,48 @@ struct EDCC {
 };
 ```
 
-### 最大流-最小割
+### 2-sat
+```cpp
+void twosat(){
+    int n, m;
+    cin >> n >> m;
+
+    auto id = [&](int x, int v){
+        return 2 * x - 1 + v;
+    };
+
+    // x==a || y==b
+    // !x -> y && !y -> x
+    vector<vector<int>> gra(2 * n + 1);
+    for(int i=1; i<=m; i++){
+        int x, a, y, b;
+        cin >> x >> a >> y >> b;
+        gra[id(x, a ^ 1)].push_back(id(y, b));
+        gra[id(y, b ^ 1)].push_back(id(x, a));
+    }
+
+    SCC scc;
+    scc.init(2 * n, gra);
+    scc.work();
+
+    // a -> !a , 则 a = false
+    vector<int> ans(n + 1);
+    for(int i=1; i<=n; i++){
+        int f = id(i, 0), t = id(i, 1);
+        if(scc.col[f] == scc.col[t]){
+            cout << "IMPOSSIBLE\n";
+            return;
+        }
+        ans[i] = scc.col[f] > scc.col[t];
+    }
+
+    cout << "POSSIBLE\n";
+    for(int i=1; i<=n; i++){
+        cout << ans[i] << " \n"[i==n];
+    }
+```
+
+### 最大流-最小割-最小点覆盖
 
 ```cpp
 template<typename T>
@@ -445,7 +486,7 @@ struct Flow_ {
     vector<vector<int>> h;
     vector<int> cur, d;
 
-    Flow_(int n) : n(n + 1), h(n + 1) {}
+    Flow_(int n) : n(n), h(n) {} // 0-based
 
     void add_edge(int u, int v, T c) {
         h[u].push_back(edges.size());
@@ -501,6 +542,111 @@ struct Flow_ {
     }
 };
 using Flow = Flow_<int>;
+```
+
+### 最小费用最大流
+```cpp
+constexpr ll inf = 4e18;
+struct MinCostFlow {
+    using pli = pair<ll, int>;
+    struct Edge {
+        int v, c;
+        ll cost;
+    };
+
+    int n;
+    vector<Edge> e;
+    vector<vector<int>> g;
+    vector<ll> h, dis;
+    vector<int> pre;
+    void init(int n_){ // 0-based
+        n = n_;
+        e.clear();
+        g.assign(n, {});
+    }
+
+    void add(int u, int v, int c, ll cost){
+        g[u].push_back(e.size());
+        e.push_back({v, c, cost});
+        g[v].push_back(e.size());
+        e.push_back({u, 0, -cost});
+    }
+
+    void spfa(int s){
+        h.assign(n, inf);
+        vector<int> inq(n);
+        queue<int> que;
+        h[s] = 0;
+        que.push(s);
+        inq[s] = 1;
+        while(!que.empty()){
+            int u = que.front();
+            que.pop();
+            inq[u] = 0;
+            for(int i : g[u]){
+                auto [v, c, cost] = e[i];
+                if(c > 0 && h[v] > h[u] + cost){
+                    h[v] = h[u] + cost;
+                    if(!inq[v]){
+                        que.push(v);
+                        inq[v] = 1;
+                    }
+                }
+            }
+        }
+        for(int i=0; i<n; i++){
+            if(h[i] == inf) h[i] = 0;
+        }
+    }
+
+    bool dijkstra(int s, int t){
+        dis.assign(n, inf);
+        pre.assign(n, -1);
+        priority_queue<pli, vector<pli>, greater<pli>> que;
+        dis[s] = 0;
+        que.emplace(0, s);
+        while(!que.empty()){
+            auto [d, u] = que.top();
+            que.pop();
+            if(dis[u] < d) continue;
+
+            for(int i : g[u]){
+                auto [v, c, cost] = e[i];
+                ll nd = d + h[u] - h[v] + cost;
+                if(c > 0 && dis[v] > nd){
+                    dis[v] = nd;
+                    pre[v] = i;
+                    que.emplace(dis[v], v);
+                }
+            }
+        }
+
+        return dis[t] != inf;
+    }
+
+    pair<int, ll> flow(int s, int t){
+        int flow = 0;
+        ll cost = 0;
+        spfa(s);
+
+        while(dijkstra(s, t)){
+            for(int i=0; i<n; i++){
+                if(dis[i] != inf) h[i] += dis[i];
+            }
+            int add = numeric_limits<int>::max();
+            for(int i=t; i!=s; i=e[pre[i] ^ 1].v){
+                add = min(add, e[pre[i]].c);
+            }
+            for(int i=t; i!=s; i=e[pre[i] ^ 1].v){
+                e[pre[i]].c -= add;
+                e[pre[i] ^ 1].c += add;
+            }
+            flow += add;
+            cost += 1ll * add * h[t];
+        }
+        return {flow, cost};
+    }
+};
 ```
 
 <div style="page-break-after:always"></div>
@@ -1087,6 +1233,66 @@ void sieve(){
 }
 ```
 
+### Min25 筛
+> 求 ${\pi(n)}$, 即 1...n 的质数个数 
+```cpp
+struct Min25 {
+    ll n, sq;
+    vector<ll> w, g;
+    vector<int> id1, id2, prime, vis;
+
+    int id(ll x){
+        return x <= sq ? id1[x] : id2[n / x];
+    }
+
+    void init(ll n_){
+        n = n_;
+        sq = sqrtl(n);
+        while((sq + 1) * (sq + 1) <= n) sq++;
+        while(sq * sq > n) sq--;
+
+        id1.assign(sq + 2, 0);
+        id2.assign(sq + 2, 0);
+        vis.assign(sq + 2, 0);
+        prime.clear();
+        w.clear();
+        g.clear();
+
+        for(int i=2; i<=sq; i++){
+            if(!vis[i]) prime.push_back(i);
+            for(int p : prime){
+                if(1LL * i * p > sq) break;
+                vis[i * p] = 1;
+                if(i % p == 0) break;
+            }
+        }
+
+        for(ll l=1, r; l<=n; l=r+1){
+            ll v = n / l;
+            r = n / v;
+            int idx = w.size();
+            w.push_back(v);
+            g.push_back(v - 1);
+            if(v <= sq) id1[v] = idx;
+            else id2[n / v] = idx;
+        }
+
+        for(int i=0; i<(int)prime.size(); i++){
+            ll p = prime[i];
+            ll pp = p * p;
+            for(int j=0; j<(int)w.size() && pp<=w[j]; j++){
+                g[j] -= g[id(w[j] / p)] - i;
+            }
+        }
+    }
+
+    ll pi(ll x){
+        if(x < 2) return 0;
+        return g[id(x)];
+    }
+};
+```
+
 ### OTHER
 
 #### $min$, $max$ 绝对值的恒等式
@@ -1172,6 +1378,66 @@ ll cross(int x1, int y1, int x2, int y2){ // 两向量叉积
 ### 任意多边形面积 (高斯面积公式)
 
 $$\text{Area} = \frac{1}{2} \left| \sum_{i=1}^{n} (x_i \cdot y_{i+1} - x_{i+1} \cdot y_i) \right|$$
+
+### 闵可夫斯基和 (计算两个凸包合成的大凸包)
+```cpp
+template<class T>
+struct Point {
+    T x, y;
+    Point operator + (const Point& p) const { return {x + p.x, y + p.y}; }
+    Point operator - (const Point& p) const { return {x - p.x, y - p.y}; }
+    Point operator - () const { return {-x, -y}; }
+    bool operator == (const Point& p) const { return x == p.x && y == p.y; }
+};
+template<class T>
+i128 cross(const Point<T>& a, const Point<T>& b) {
+    return (i128)a.x * b.y - (i128)a.y * b.x;
+}
+int sign(i128 x) {
+    return (x > 0) - (x < 0);
+}
+template<class T>
+void rot(vector<Point<T>>& p) {
+    int id = 0;
+    for(int i=1; i<(int)p.size(); i++){
+        if(p[i].y < p[id].y || (p[i].y == p[id].y && p[i].x < p[id].x)) id = i;
+    }
+    rotate(p.begin(), p.begin() + id, p.end());
+}
+
+template<class T>
+// 保证 p[0] 为最低点
+void rot(vector<Point<T>>& p) {
+    int id = 0;
+    for(int i=1; i<(int)p.size(); i++){
+        if(p[i].y < p[id].y || (p[i].y == p[id].y && p[i].x < p[id].x)) id = i;
+    }
+    rotate(p.begin(), p.begin() + id, p.end());
+}
+
+template<class T>
+vector<Point<T>> mincowski(vector<Point<T>> P1, vector<Point<T>> P2) {
+    rot(P1), rot(P2);
+    int n = P1.size(), m = P2.size();
+    vector<Point<T>> V1(n), V2(m);
+    for(int i=0; i<n; i++) V1[i] = P1[(i + 1) % n] - P1[i];
+    for(int i=0; i<m; i++) V2[i] = P2[(i + 1) % m] - P2[i];
+
+    vector<Point<T>> ans = {P1.front() + P2.front()};
+    int i = 0, j = 0;
+    while(i < n && j < m){
+        int s = sign(cross(V1[i], V2[j]));
+        if(s > 0) ans.push_back(ans.back() + V1[i++]);
+        else if(s < 0) ans.push_back(ans.back() + V2[j++]);
+        else ans.push_back(ans.back() + V1[i++] + V2[j++]);
+    }
+    while(i < n) ans.push_back(ans.back() + V1[i++]);
+    while(j < m) ans.push_back(ans.back() + V2[j++]);
+
+    if(ans.size() > 1 && ans.back() == ans.front()) ans.pop_back();
+    return ans;
+}
+```
 
 ## 数据结构
 
@@ -1396,11 +1662,11 @@ struct SegTree{
     
     void init(int n_){
         n = n_;
-        sum = add = vector<ll>(n+1 << 2);
+        sum = add = vector<ll>(n << 2);
     }
     void init(int n_, auto& a_){
         n = n_; a = a_;
-        sum = add = vector<ll>(n+1 << 2);
+        sum = add = vector<ll>(n << 2);
         build(1, 0, n);
     }
 
@@ -1429,15 +1695,16 @@ struct SegTree{
         pull(p);
     }
         
-    void update(int p, int l, int r, int x, ll v){ // 单点修改
+    void update(int p, int l, int r, int x, ll v){ // 单点修改 (赋值)
         if(l == r){
-            sum[p] = a[l];
+            sum[p] = v;
             return;
         }
+        push(p, l, r);
         int mid = (l + r) >> 1;
         if(x <= mid) update(lp, l, mid, x, v);
         else update(rp, mid+1, r, x, v);
-        pull();
+        pull(p);
     }
     void update(int p, int l, int r, int x, int y, ll v){ // 区间修改
         if(x <= l && r <= y){
