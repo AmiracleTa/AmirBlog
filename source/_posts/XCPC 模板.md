@@ -722,15 +722,21 @@ $$
 
 ### 卷积
 
-标准卷积（和为定值）：${c_k = \sum_{k}{f[k-i]g[i]}}$
+**标准卷积（和为定值）：**
 
-差卷积（差为定值）：${c_k = \sum_{k}{f[i+k]g[i]}}$ 或 ${c_k = \sum_{k}{f[i-k]g[i]}}$
+$$c_k = \sum_{i} f[k-i]g[i]$$
 
-**数组反转以转化成标准卷积**
+**差卷积（差为定值）：**
 
-${h_k = \sum_{k}{f[i+k]g[i]}}$ 将 f 反转后 ${h_k = \sum_{f[n-(i+k)]g[i]} = \sum_{f[n-i-k]g[i]}}$
+$$c_k = \sum_{i} f[i+k]g[i] \quad \text{或} \quad c_k = \sum_{i} f[i-k]g[i]$$
 
-其中 n-i-k+i = n-k 为定值，f * j 得到结果数组 c，${c[n-k] = \sum_{f[n-k-i]g[i]} = h_k}$
+**数组反转以转化成标准卷积：**
+
+对于差卷积 $h_k = \sum_{i} f[i+k]g[i]$，将数组 $f$ 反转后：
+$$h_k = \sum_{i} f[n-(i+k)]g[i] = \sum_{i} f[n-i-k]g[i]$$
+
+其中下标和 $(n-i-k) + i = n-k$ 为定值。将 $f * g$ 得到结果数组 $c$，则有：
+$$c[n-k] = \sum_{i} f[n-k-i]g[i] = h_k$$
 
 #### FFT 快速傅里叶变换
 
