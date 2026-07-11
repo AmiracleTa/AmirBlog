@@ -8,7 +8,8 @@ date: 2025-10-21 15:12:43
 # updated: 2026-02-09 00:00:00
 # updated: 2026-02-10 00:00:00
 # updated: 2026-03-03 10:25:00
-updated: 2026-04-21 17:31:26
+# updated: 2026-04-21 17:31:26
+updated: 2026-07-11 21:02:05
 
 tags:
   - XCPC
@@ -715,11 +716,21 @@ $$
 
 > 加一个 ${(-1)^{n-i}}$ | ${(-1)^{i-k}}$ 系数
 
-<img src="https://cdn.jsdelivr.net/gh/AmiracleTa/pic-bed/img/%E4%BA%8C%E9%A1%B9%E5%8F%8D%E6%BC%94.png" style="zoom: 67%;" />
+<img src="https://cdn.amiracle.site/%E4%BA%8C%E9%A1%B9%E5%8F%8D%E6%BC%94.png" style="zoom: 67%;" />
 
 <div style="page-break-after:always"></div>
 
 ### 卷积
+
+标准卷积（和为定值）：${c_k = \sum_{k}{f[k-i]g[i]}}$
+
+差卷积（差为定值）：${c_k = \sum_{k}{f[i+k]g[i]}}$ 或 ${c_k = \sum_{k}{f[i-k]g[i]}}$
+
+**数组反转以转化成标准卷积**
+
+${h_k = \sum_{k}{f[i+k]g[i]}}$ 将 f 反转后 ${h_k = \sum_{f[n-(i+k)]g[i]} = \sum_{f[n-i-k]g[i]}}$
+
+其中 n-i-k+i = n-k 为定值，f * j 得到结果数组 c，${c[n-k] = \sum_{f[n-k-i]g[i]} = h_k}$
 
 #### FFT 快速傅里叶变换
 
@@ -1345,6 +1356,18 @@ ${x = x_0 + k \frac{p}{g}} \quad k=0,1,2\cdots g-1$
 &nbsp;
 
 n mod i = n - ${\lfloor{\frac{n}{i}}\rfloor i}$
+
+&nbsp;
+
+**同余方程组**
+
+$x = y_i \mod p_i$
+
+设特解 $x_0$，则 $p_i | x - x_0$
+
+可以推出 $lcm(pi) | x-x_0$，解为 $x_0, x_0+L, x_0+2L...$
+
+可知 $x_0=c \mod L$，也就是 mod L 情况下解唯一
 
 <div style="page-break-after:always"></div>
 
