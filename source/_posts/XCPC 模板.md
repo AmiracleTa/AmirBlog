@@ -9,7 +9,8 @@ date: 2025-10-21 15:12:43
 # updated: 2026-02-10 00:00:00
 # updated: 2026-03-03 10:25:00
 # updated: 2026-04-21 17:31:26
-updated: 2026-07-11 21:02:05
+# updated: 2026-07-11 21:02:05
+updated: 2026-07-16 00:25:41
 
 tags:
   - XCPC
@@ -724,19 +725,37 @@ $$
 
 **标准卷积（和为定值）：**
 
-$$c_k = \sum_{i} f[k-i]g[i]$$
+$$
+\begin{align*}
+c_k = \sum_{i} f[k-i]g[i]
+\end{align*}
+$$
 
 **差卷积（差为定值）：**
 
-$$c_k = \sum_{i} f[i+k]g[i] \quad \text{或} \quad c_k = \sum_{i} f[i-k]g[i]$$
+$$
+\begin{align*}
+c_k = \sum_{i} f[i+k]g[i] \quad \text{或} \quad c_k = \sum_{i} f[i-k]g[i]
+\end{align*}
+$$
 
 **数组反转以转化成标准卷积：**
 
 对于差卷积 $h_k = \sum_{i} f[i+k]g[i]$，将数组 $f$ 反转后：
-$$h_k = \sum_{i} f[n-(i+k)]g[i] = \sum_{i} f[n-i-k]g[i]$$
+
+$$
+\begin{align*}
+h_k = \sum_{i} f[n-(i+k)]g[i] = \sum_{i} f[n-i-k]g[i]
+\end{align*}
+$$
 
 其中下标和 $(n-i-k) + i = n-k$ 为定值。将 $f * g$ 得到结果数组 $c$，则有：
-$$c[n-k] = \sum_{i} f[n-k-i]g[i] = h_k$$
+
+$$
+\begin{align*}
+c[n-k] = \sum_{i} f[n-k-i]g[i] = h_k
+\end{align*}
+$$
 
 #### FFT 快速傅里叶变换
 
@@ -1337,11 +1356,35 @@ $$
 
 #### 组合数常用公式
 
-- $k \cdot C_n^k = n \cdot C_{n-1}^{\,k-1}$
-- $C_n^k + C_n^{k+1} = C_{n+1}^{k+1}$ （递推公式, 直接划分成两类）
-- $\sum_{i=0}^n C_n^i = 2^n$ （按选几个划分）
-- $\sum_{x=m}^{n} {x \choose m} = {n+1 \choose m+1}$ （按最大值划分）
-- $\sum_{i=0}^{n} {n \choose i}^2 = {2n \choose n}$
+**基础公式**
+
+$k \cdot C_n^k = n \cdot C_{n-1}^{\,k-1}$
+
+$C_n^k + C_n^{k+1} = C_{n+1}^{k+1}$ （递推公式, 直接划分成两类）
+
+$\sum_{i=0}^n C_n^i = 2^n$ （按选几个划分）
+
+$\sum_{i=0}^{n} {n \choose i}^2 = {2n \choose n}$
+
+**曲棍球恒等式**
+
+$$
+\sum_{x=m}^{n} {x \choose m} = {n+1 \choose m+1}$ （按最大值划分）
+$$
+
+$$
+\sum_{r=0}^{n-m}\binom{m+r}{m}
+=
+\sum_{r=0}^{n-m}\binom{m+r}{r}
+=
+\binom{n+1}{m+1}
+$$
+
+**多步选择恒等式**
+
+$$\binom{n}{m} \binom{m}{k} = \binom{n}{k} \binom{n-k}{m-k}$$
+
+$$\frac{\binom{n}{k}}{\binom{m}{k}} = \frac{\binom{n}{m}}{\binom{n-k}{m-k}}$$
 
 #### 同余方程
 
@@ -1600,7 +1643,7 @@ struct SegTree{
         tag = vector<ll>(n+1 << 2);
         info = vector<ll>(n+1 << 2);
     }
-    void init(int n_, auto& a_){
+    void init(int n_, const vector<ll>& a_){
         n = n_; a = a_;
         // init tags, info
         tag = vector<ll>(n+1 << 2);
@@ -1675,6 +1718,67 @@ struct SegTree{
 };
 ```
 
+> 单点修改 | 区间和
+
+```cpp
+struct SegTree{
+    int n;
+    vector<ll> info; // 区间和
+
+    #define lp (p << 1)
+    #define rp (p << 1 | 1)
+    #define lk (mid - l + 1)
+    #define rk (r - mid)
+
+    void init(int n_){
+        n = n_;
+        info = vector<ll>(n+1 << 2);
+    }
+    void init(int n_, const vector<ll>& a_){
+        n = n_;
+        info = vector<ll>(n+1 << 2);
+        build(1, 0, n, a_);
+    }
+
+    void pull(int p){
+        info[p] = info[lp] + info[rp];
+    }
+    void build(int p, int l, int r, const vector<ll>& a_){
+        if(l == r){
+            info[p] = a_[l];
+            return;
+        }
+        int mid = l + r >> 1;
+        build(lp, l, mid, a_);
+        build(rp, mid+1, r, a_);
+        pull(p);
+    }
+
+    void update(int p, int l, int r, int x, ll v){
+        if(l == r){
+            info[p] = v;
+            return;
+        }
+        int mid = l + r >> 1;
+        if(x <= mid) update(lp, l, mid, x, v);
+        else update(rp, mid+1, r, x, v);
+        pull(p);
+    }
+    ll query(int p, int l, int r, int x, int y){
+        if(x <= l && r <= y) return info[p];
+
+        ll ans = 0;
+        int mid = l + r >> 1;
+        if(x <= mid) ans += query(lp, l, mid, x, y);
+        if(y >= mid + 1) ans += query(rp, mid+1, r, x, y);
+        return ans;
+    }
+
+    void update(int x, ll v){ update(1, 0, n, x, v); } // 单点修改
+    ll query(int L, int R){ return query(1, 0, n, L, R); } // 区间和
+};
+```
+
 > 区间加 (ai+v) | 区间和
 
 ```cpp
@@ -1693,7 +1797,7 @@ struct SegTree{
         n = n_;
         sum = add = vector<ll>(n << 2);
     }
-    void init(int n_, auto& a_){
+    void init(int n_, const vector<ll>& a_){
         n = n_; a = a_;
         sum = add = vector<ll>(n << 2);
         build(1, 0, n);
@@ -1785,7 +1889,7 @@ struct SegTree{
         add = vector<ll>(n+1 << 2);
         ma = vector<ll>(n+1 << 2, -inf);
     }
-    void init(int n_, auto& a_){
+    void init(int n_, const vector<ll>& a_){
         n = n_; a = a_;
         add = vector<ll>(n+1 << 2);
         ma = vector<ll>(n+1 << 2, -inf);
@@ -1818,6 +1922,18 @@ struct SegTree{
         pull(p);
     }
 
+    void update(int p, int l, int r, int x, ll v){
+        if(l == r){
+            ma[p] = v;
+            add[p] = 0;
+            return;
+        }
+        int mid = (l + r) >> 1;
+        push(p, l, r);
+        if(x <= mid) update(lp, l, mid, x, v);
+        else update(rp, mid + 1, r, x, v);
+        pull(p);
+    }
     void update(int p, int l, int r, int x, int y, ll v){
         if(x <= l && r <= y){
             lazy(p, r - l + 1, v);
@@ -1870,7 +1986,7 @@ struct SegTree{
         mi = vector<ll>(n+1 << 2, inf);
         build(1, 0, n);
     }
-    void init(int n_, auto& a_){
+    void init(int n_, const vector<ll>& a_){
         n = n_; a = a_;
         cnt = vector<int>(n+1 << 2, -1);
         add = vector<ll>(n+1 << 2);
@@ -1980,7 +2096,7 @@ struct SegTree{ // 0-idx
         sum = vector<ll>(n+1 << 2);
         mul = vector<ll>(n+1 << 2, 1);
     }
-    void init(int n_, auto& a_){
+    void init(int n_, const vector<ll>& a_){
         n = n_; a = a_;
         sum = vector<ll>(n+1 << 2);
         mul = vector<ll>(n+1 << 2, 1);
@@ -2060,7 +2176,7 @@ struct SegTree{
         info = vector<ll>(n+1 << 2, inf);
         mi = vector<ll>(n+1 << 2, inf);
     }
-    void init(int n_, auto& a_){
+    void init(int n_, const vector<ll>& a_){
         n = n_; a = a_;
         info = vector<ll>(n+1 << 2, inf);
         mi = vector<ll>(n+1 << 2, inf);
@@ -2151,7 +2267,7 @@ struct SegTree{
         n = n_;
         prod = vector<ll>(n+1 << 2, 1);
     }
-    void init(int n_, auto& a_){
+    void init(int n_, const vector<ll>& a_){
         n = n_; a = a_;
         prod = vector<ll>(n+1 << 2, 1);
         build(1, 0, n);
@@ -2215,7 +2331,7 @@ struct SegTree{
         n = n_;
         prod = vector<matrix>(n+1 << 2, matrix(M));
     }
-    void init(int n_, auto& a_){
+    void init(int n_, const vector<matrix>& a_){
         n = n_; a = a_;
         prod = vector<matrix>(n+1 << 2, matrix(M));
         build(1, 0, n);
