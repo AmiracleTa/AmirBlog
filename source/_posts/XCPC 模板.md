@@ -1422,26 +1422,72 @@ $x = y_i \mod p_i$
 
 ## 寄算几何
 
+### Point
+
+```cpp
+struct Point {
+    ll x, y;
+    Point operator + (const Point& p) const { return {x+p.x, y+p.y}; }
+    Point operator - (const Point& p) const { return {x-p.x, y-p.y}; }
+    bool operator < (const Point& p) const { return tie(x, y) < tie(p.x, p.y); }
+    bool operator == (const Point& p) const { return tie(x, y) == tie(p.x, p.y); }
+};
+
+i128 cross(const Point& a, const Point& b){
+    return (i128)a.x * b.y - (i128)a.y * b.x;
+}
+i128 dot(const Point& a, const Point& b){
+	return (i128)a.x * b.x + (i128)a.y * b.y;
+}
+```
+
+### ConvexHull
+```cpp
+vector<Point> convexHull(vector<Point> p){
+    sort(p.begin(), p.end());
+    p.erase(unique(p.begin(), p.end()), p.end());
+
+    int n = p.size();
+    if(n <= 1) return p;
+
+    vector<Point> lo, hi;
+    for(int i=0; i<n; i++){
+        while(lo.size() >= 2 && cross(lo.back()-lo[lo.size()-2], p[i]-lo[lo.size()-2]) <= 0){
+            lo.pop_back();
+        }
+        lo.push_back(p[i]);
+    }
+    for(int i=n-1; i>=0; i--){
+        while(hi.size() >= 2 && cross(hi.back()-hi[hi.size()-2], p[i]-hi[hi.size()-2]) <= 0){
+            hi.pop_back();
+        }
+        hi.push_back(p[i]);
+    }
+    // 上下凸包一定会有两点重合
+    lo.pop_back();
+    hi.pop_back();
+    vector<Point> res = lo;
+    res.insert(res.end(), hi.begin(), hi.end());
+    return res;
+}
+```
+
 ### 极角排序(整数运算，无精度问题)
 
 ```cpp
-ll cross(int x1, int y1, int x2, int y2){ // 两向量叉积
-    return 1ll * x1 * y2 - 1ll * y1 * x2;
-}
     // sort(a.begin(), a.end(), rad); // 精度可能不够高
 {
-    auto quad = [](int x, int y){ // 第几象限 , 逆时针左闭右开
+    auto quad = [](auto x, auto y){ // 第几象限 , 逆时针左闭右开
         if(x > 0 && y >= 0) return 0;
         if(x <= 0 && y > 0) return 1;
         if(x < 0 && y >= 0) return 2;
         return 3;
     };
-    // 整数极角排序 , 完全无精度问题
-    sort(a.begin(), a.end(), [&](auto x, auto y){
-        auto [x1, y1] = x;
-        auto [x2, y2] = y;
+    sort(a.begin(), a.end(), [&](Point& A, Point& B){
+        auto [x1, y1] = A;
+        auto [x2, y2] = B;
         int qdx = quad(x1, y1), qdy = quad(x2, y2);
-        if(qdx == qdy) return cross(x1, y1, x2, y2)>0; // 期待是逆时针
+        if(qdx == qdy) return cross(A, B)>0;
         return qdx < qdy;
     });
 }
@@ -1452,62 +1498,176 @@ ll cross(int x1, int y1, int x2, int y2){ // 两向量叉积
 $$\text{Area} = \frac{1}{2} \left| \sum_{i=1}^{n} (x_i \cdot y_{i+1} - x_{i+1} \cdot y_i) \right|$$
 
 ### 闵可夫斯基和 (计算两个凸包合成的大凸包)
+
 ```cpp
-template<class T>
-struct Point {
-    T x, y;
-    Point operator + (const Point& p) const { return {x + p.x, y + p.y}; }
-    Point operator - (const Point& p) const { return {x - p.x, y - p.y}; }
-    Point operator - () const { return {-x, -y}; }
-    bool operator == (const Point& p) const { return x == p.x && y == p.y; }
-};
-template<class T>
-i128 cross(const Point<T>& a, const Point<T>& b) {
-    return (i128)a.x * b.y - (i128)a.y * b.x;
-}
-int sign(i128 x) {
+int sign(i128 x){
     return (x > 0) - (x < 0);
 }
-template<class T>
-void rot(vector<Point<T>>& p) {
-    int id = 0;
-    for(int i=1; i<(int)p.size(); i++){
-        if(p[i].y < p[id].y || (p[i].y == p[id].y && p[i].x < p[id].x)) id = i;
+// 调整 p[0] 为左下点
+void rotate(vector<Point>& p){
+    int idx = 0;
+    for(int i=1; i<p.size(); i++){
+        if(p[i].y < p[idx].y || (p[i].y == p[idx].y && p[i].x < p[idx].x)) idx = i;
     }
-    rotate(p.begin(), p.begin() + id, p.end());
+    rotate(p.begin(), p.begin() + idx, p.end());
 }
-
-template<class T>
-// 保证 p[0] 为最低点
-void rot(vector<Point<T>>& p) {
-    int id = 0;
-    for(int i=1; i<(int)p.size(); i++){
-        if(p[i].y < p[id].y || (p[i].y == p[id].y && p[i].x < p[id].x)) id = i;
-    }
-    rotate(p.begin(), p.begin() + id, p.end());
-}
-
-template<class T>
-vector<Point<T>> mincowski(vector<Point<T>> P1, vector<Point<T>> P2) {
-    rot(P1), rot(P2);
-    int n = P1.size(), m = P2.size();
-    vector<Point<T>> V1(n), V2(m);
-    for(int i=0; i<n; i++) V1[i] = P1[(i + 1) % n] - P1[i];
-    for(int i=0; i<m; i++) V2[i] = P2[(i + 1) % m] - P2[i];
-
-    vector<Point<T>> ans = {P1.front() + P2.front()};
+vector<Point> mincowski(vector<Point> p1, vector<Point> p2) {
+    rotate(p1), rotate(p2);
+    int n = p1.size(), m = p2.size();
+    vector<Point> v1(n), v2(m);
+    for(int i=0; i<n; i++) v1[i] = p1[(i + 1) % n] - p1[i];
+    for(int i=0; i<m; i++) v2[i] = p2[(i + 1) % m] - p2[i];
+    vector<Point> ans = {p1.front() + p2.front()};
     int i = 0, j = 0;
     while(i < n && j < m){
-        int s = sign(cross(V1[i], V2[j]));
-        if(s > 0) ans.push_back(ans.back() + V1[i++]);
-        else if(s < 0) ans.push_back(ans.back() + V2[j++]);
-        else ans.push_back(ans.back() + V1[i++] + V2[j++]);
+        int s = sign(cross(v1[i], v2[j]));
+        if(s > 0) ans.push_back(ans.back() + v1[i++]);
+        else if(s < 0) ans.push_back(ans.back() + v2[j++]);
+        else ans.push_back(ans.back() + v1[i++] + v2[j++]);
     }
-    while(i < n) ans.push_back(ans.back() + V1[i++]);
-    while(j < m) ans.push_back(ans.back() + V2[j++]);
-
+    while(i < n) ans.push_back(ans.back() + v1[i++]);
+    while(j < m) ans.push_back(ans.back() + v2[j++]);
     if(ans.size() > 1 && ans.back() == ans.front()) ans.pop_back();
     return ans;
+}
+```
+
+### 凸多边形面积并集 O(E * E)
+
+```cpp
+// 边 A->B 在多边形 p 中被覆盖的比例
+pdd coverOf(const vector<Point>& p, const Point& A, const Point& B){
+	ld l = 0, r = 1;
+	Point d = B - A;
+	int n = p.size();
+	for(int i=0; i<n; i++){
+		Point e = p[(i + 1) % n] - p[i];
+		i128 u = cross(e, A - p[i]);
+		i128 v = cross(e, d);
+
+		if(v == 0){
+			if(u < 0) return {1, 0};
+			continue;
+		}
+
+		ld t = -(ld)u / (ld)v;
+		if(v > 0) l = max(l, t);
+		else r = min(r, t);
+
+		if(l > r) return {1, 0};
+	}
+	return {l, r};
+}
+bool existSameDir(const vector<Point>& p, const Point& A, const Point& B){
+	Point d = B - A;
+	int n = p.size();
+	for(int i=0; i<n; i++){
+		Point e = p[(i + 1) % n] - p[i];
+		if(cross(e, d) == 0 && cross(e, A - p[i]) == 0 && dot(e, d) > 0) return true;
+	}
+	return false;
+}
+
+ld unionArea(const vector<vector<Point>>& ps){
+	ld ans = 0;
+	for(int i=0; i<ps.size(); i++){
+		for(int j=0; j<ps[i].size(); j++){
+            int n = ps.size(), m = ps[i].size();
+			vector<pdd> seg;
+			for(int k=0; k<n; k++){
+				if(k == i) continue;
+                if(existSameDir(ps[k], ps[i][j], ps[i][(j+1)%m]) && k > i) continue;                
+				auto [l, r] = coverOf(ps[k], ps[i][j], ps[i][(j+1)%m]);
+				if(l <= r) seg.push_back({l, r});
+			}
+
+			sort(seg.begin(), seg.end());
+			ld cover = 0; // A->B 被其他凸多边形覆盖的比例
+			if(!seg.empty()){
+				ld l = seg[0].first, r = seg[0].second;
+				for(int k=1; k<seg.size(); k++){
+					if(seg[k].first <= r){
+						r = max(r, seg[k].second);
+					}
+                    else{
+						cover += r - l;
+						l = seg[k].first;
+						r = seg[k].second;
+					}
+				}
+				cover += r - l;
+			}
+			ans += (ld)cross(ps[i][j], ps[i][(j+1)%m]) * (1-cover);
+		}
+	}
+	return ans / 2;
+}
+```
+
+### 三角剖分 (ear clipping) O(n * n)
+
+```cpp
+bool inTriangle(const Point& p, const Point& a, const Point& b, const Point& c){
+    return cross(b - a, p - a) >= 0 &&
+           cross(c - b, p - b) >= 0 &&
+           cross(a - c, p - c) >= 0;
+}
+
+// ear clipping , p->simple polygon
+vector<vector<Point>> triangulate(const vector<Point>& p){
+	int n = p.size();
+	vector<int> pre(n), nxt(n);
+	vector<bool> alive(n, true);
+	for(int i=0; i<n; i++){
+		pre[i] = (i - 1 + n) % n;
+		nxt[i] = (i + 1) % n;
+	}
+	auto isEar = [&](int x){
+		if(!alive[x]) return false;
+
+        int a = pre[x], b = x, c = nxt[x];
+		if(cross(p[b] - p[a], p[c] - p[b]) <= 0){
+			return false;
+		}
+
+		for(int i=0; i<n; i++){
+			if(!alive[i]) continue;
+			if(i == a || i == b || i == c) continue;
+
+			if(inTriangle(p[i], p[a], p[b], p[c])){
+				return false;
+			}
+		}
+		return true;
+	};
+
+	queue<int> q;
+	for(int i=0; i<n; i++){
+		if(isEar(i)) q.push(i);
+	}
+
+	vector<vector<Point>> res;
+	int cnt = n;
+	while(cnt > 3){
+		while(q.size() && !isEar(q.front())) q.pop();
+		int b = q.front(); q.pop();
+		int a = pre[b], c = nxt[b];
+
+		alive[b] = false;
+		nxt[a] = c, pre[c] = a;
+		cnt--;
+
+		res.push_back({p[a], p[b], p[c]});
+		if(isEar(a)) q.push(a);
+		if(isEar(c)) q.push(c);
+	}
+
+	int a = 0;
+	while(!alive[a]) a++;
+
+	int b = nxt[a], c = nxt[b];
+	res.push_back({p[a], p[b], p[c]});
+	return res;
 }
 ```
 
