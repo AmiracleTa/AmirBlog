@@ -1437,7 +1437,7 @@ i128 cross(const Point& a, const Point& b){
     return (i128)a.x * b.y - (i128)a.y * b.x;
 }
 i128 dot(const Point& a, const Point& b){
-	return (i128)a.x * b.x + (i128)a.y * b.y;
+    return (i128)a.x * b.x + (i128)a.y * b.y;
 }
 ```
 
@@ -1537,70 +1537,70 @@ vector<Point> mincowski(vector<Point> p1, vector<Point> p2) {
 ```cpp
 // 边 A->B 在多边形 p 中被覆盖的比例
 pdd coverOf(const vector<Point>& p, const Point& A, const Point& B){
-	ld l = 0, r = 1;
-	Point d = B - A;
-	int n = p.size();
-	for(int i=0; i<n; i++){
-		Point e = p[(i + 1) % n] - p[i];
-		i128 u = cross(e, A - p[i]);
-		i128 v = cross(e, d);
+    ld l = 0, r = 1;
+    Point d = B - A;
+    int n = p.size();
+    for(int i=0; i<n; i++){
+        Point e = p[(i + 1) % n] - p[i];
+        i128 u = cross(e, A - p[i]);
+        i128 v = cross(e, d);
 
-		if(v == 0){
-			if(u < 0) return {1, 0};
-			continue;
-		}
+        if(v == 0){
+            if(u < 0) return {1, 0};
+            continue;
+        }
 
-		ld t = -(ld)u / (ld)v;
-		if(v > 0) l = max(l, t);
-		else r = min(r, t);
+        ld t = -(ld)u / (ld)v;
+        if(v > 0) l = max(l, t);
+        else r = min(r, t);
 
-		if(l > r) return {1, 0};
-	}
-	return {l, r};
+        if(l > r) return {1, 0};
+    }
+    return {l, r};
 }
 bool existSameDir(const vector<Point>& p, const Point& A, const Point& B){
-	Point d = B - A;
-	int n = p.size();
-	for(int i=0; i<n; i++){
-		Point e = p[(i + 1) % n] - p[i];
-		if(cross(e, d) == 0 && cross(e, A - p[i]) == 0 && dot(e, d) > 0) return true;
-	}
-	return false;
+    Point d = B - A;
+    int n = p.size();
+    for(int i=0; i<n; i++){
+        Point e = p[(i + 1) % n] - p[i];
+        if(cross(e, d) == 0 && cross(e, A - p[i]) == 0 && dot(e, d) > 0) return true;
+    }
+    return false;
 }
 
 ld unionArea(const vector<vector<Point>>& ps){
-	ld ans = 0;
-	for(int i=0; i<ps.size(); i++){
-		for(int j=0; j<ps[i].size(); j++){
+    ld ans = 0;
+    for(int i=0; i<ps.size(); i++){
+        for(int j=0; j<ps[i].size(); j++){
             int n = ps.size(), m = ps[i].size();
-			vector<pdd> seg;
-			for(int k=0; k<n; k++){
-				if(k == i) continue;
+            vector<pdd> seg;
+            for(int k=0; k<n; k++){
+                if(k == i) continue;
                 if(existSameDir(ps[k], ps[i][j], ps[i][(j+1)%m]) && k > i) continue;                
-				auto [l, r] = coverOf(ps[k], ps[i][j], ps[i][(j+1)%m]);
-				if(l <= r) seg.push_back({l, r});
-			}
+                auto [l, r] = coverOf(ps[k], ps[i][j], ps[i][(j+1)%m]);
+                if(l <= r) seg.push_back({l, r});
+            }
 
-			sort(seg.begin(), seg.end());
-			ld cover = 0; // A->B 被其他凸多边形覆盖的比例
-			if(!seg.empty()){
-				ld l = seg[0].first, r = seg[0].second;
-				for(int k=1; k<seg.size(); k++){
-					if(seg[k].first <= r){
-						r = max(r, seg[k].second);
-					}
+            sort(seg.begin(), seg.end());
+            ld cover = 0; // A->B 被其他凸多边形覆盖的比例
+            if(!seg.empty()){
+                ld l = seg[0].first, r = seg[0].second;
+                for(int k=1; k<seg.size(); k++){
+                    if(seg[k].first <= r){
+                        r = max(r, seg[k].second);
+                    }
                     else{
-						cover += r - l;
-						l = seg[k].first;
-						r = seg[k].second;
-					}
-				}
-				cover += r - l;
-			}
-			ans += (ld)cross(ps[i][j], ps[i][(j+1)%m]) * (1-cover);
-		}
-	}
-	return ans / 2;
+                        cover += r - l;
+                        l = seg[k].first;
+                        r = seg[k].second;
+                    }
+                }
+                cover += r - l;
+            }
+            ans += (ld)cross(ps[i][j], ps[i][(j+1)%m]) * (1-cover);
+        }
+    }
+    return ans / 2;
 }
 ```
 
@@ -1615,59 +1615,59 @@ bool inTriangle(const Point& p, const Point& a, const Point& b, const Point& c){
 
 // ear clipping , p->simple polygon
 vector<vector<Point>> triangulate(const vector<Point>& p){
-	int n = p.size();
-	vector<int> pre(n), nxt(n);
-	vector<bool> alive(n, true);
-	for(int i=0; i<n; i++){
-		pre[i] = (i - 1 + n) % n;
-		nxt[i] = (i + 1) % n;
-	}
-	auto isEar = [&](int x){
-		if(!alive[x]) return false;
+    int n = p.size();
+    vector<int> pre(n), nxt(n);
+    vector<bool> alive(n, true);
+    for(int i=0; i<n; i++){
+        pre[i] = (i - 1 + n) % n;
+        nxt[i] = (i + 1) % n;
+    }
+    auto isEar = [&](int x){
+        if(!alive[x]) return false;
 
         int a = pre[x], b = x, c = nxt[x];
-		if(cross(p[b] - p[a], p[c] - p[b]) <= 0){
-			return false;
-		}
+        if(cross(p[b] - p[a], p[c] - p[b]) <= 0){
+            return false;
+        }
 
-		for(int i=0; i<n; i++){
-			if(!alive[i]) continue;
-			if(i == a || i == b || i == c) continue;
+        for(int i=0; i<n; i++){
+            if(!alive[i]) continue;
+            if(i == a || i == b || i == c) continue;
 
-			if(inTriangle(p[i], p[a], p[b], p[c])){
-				return false;
-			}
-		}
-		return true;
-	};
+            if(inTriangle(p[i], p[a], p[b], p[c])){
+                return false;
+            }
+        }
+        return true;
+    };
 
-	queue<int> q;
-	for(int i=0; i<n; i++){
-		if(isEar(i)) q.push(i);
-	}
+    queue<int> q;
+    for(int i=0; i<n; i++){
+        if(isEar(i)) q.push(i);
+    }
 
-	vector<vector<Point>> res;
-	int cnt = n;
-	while(cnt > 3){
-		while(q.size() && !isEar(q.front())) q.pop();
-		int b = q.front(); q.pop();
-		int a = pre[b], c = nxt[b];
+    vector<vector<Point>> res;
+    int cnt = n;
+    while(cnt > 3){
+        while(q.size() && !isEar(q.front())) q.pop();
+        int b = q.front(); q.pop();
+        int a = pre[b], c = nxt[b];
 
-		alive[b] = false;
-		nxt[a] = c, pre[c] = a;
-		cnt--;
+        alive[b] = false;
+        nxt[a] = c, pre[c] = a;
+        cnt--;
 
-		res.push_back({p[a], p[b], p[c]});
-		if(isEar(a)) q.push(a);
-		if(isEar(c)) q.push(c);
-	}
+        res.push_back({p[a], p[b], p[c]});
+        if(isEar(a)) q.push(a);
+        if(isEar(c)) q.push(c);
+    }
 
-	int a = 0;
-	while(!alive[a]) a++;
+    int a = 0;
+    while(!alive[a]) a++;
 
-	int b = nxt[a], c = nxt[b];
-	res.push_back({p[a], p[b], p[c]});
-	return res;
+    int b = nxt[a], c = nxt[b];
+    res.push_back({p[a], p[b], p[c]});
+    return res;
 }
 ```
 
