@@ -10,7 +10,8 @@ date: 2025-10-21 15:12:43
 # updated: 2026-03-03 10:25:00
 # updated: 2026-04-21 17:31:26
 # updated: 2026-07-11 21:02:05
-updated: 2026-07-16 00:25:41
+# updated: 2026-07-20 22:27:21
+updated: 2026-07-24 00:06:47
 
 tags:
   - XCPC
@@ -706,20 +707,88 @@ f(S) = \sum_{T \subseteq S} (-1)^{|S|-|T|} g(T)
 \end{align*}
 $$
 
-####   莫比乌斯反演
+#### 莫比乌斯反演
 
-  两个函数满足这样的整除 Σ 关系 $f(x) = \sum_{d|x}g(d)$
+**高斯恒等式**
+
 $$
-f(x) = \sum_{d \mid x} g(d) \xrightarrow{\text{反演}} g(x) = \sum_{d \mid x} \mu\!\left(\frac{x}{d}\right) f(d)
+\begin{align*}
+\sum_{d\mid n}\varphi(d)=n
+\end{align*}
 $$
 
-#### 二项反演(un)
+**基本恒等式**
 
-> 加一个 ${(-1)^{n-i}}$ | ${(-1)^{i-k}}$ 系数
+$$
+\begin{align*}
+\sum_{d\mid n}\mu(d)=[n=1]
+\end{align*}
+$$
 
-<img src="https://cdn.amiracle.site/%E4%BA%8C%E9%A1%B9%E5%8F%8D%E6%BC%94.png" style="zoom: 67%;" />
+**互质指示函数**
+$$
+\begin{align*}
+[\gcd(x,y)=1]
+&=\sum_{d\mid\gcd(x,y)}\mu(d)
+=\sum_{\substack{d\mid x\\d\mid y}}\mu(d)
+\end{align*}
+$$
 
-<div style="page-break-after:always"></div>
+**子集形式**
+
+两个函数满足这样的整除 $\sum$ 关系 $f(x)=\sum_{d\mid x}g(d)$
+
+$$
+\begin{align*}
+f(x)=\sum_{d\mid x}g(d)
+\xrightarrow{\text{反演}}
+g(x)=\sum_{d\mid x}\mu\left(\frac{x}{d}\right)f(d)
+\end{align*}
+$$
+
+**超集形式**
+
+$$
+\begin{align*}
+f(n)=\sum_{n\mid d}\mu\left(\frac{d}{n}\right)g(d)
+\end{align*}
+$$
+
+$$
+\begin{align*}
+f(n)=\sum_{n\mid d}f(d)
+=\sum_{k\ge 1}g(nk),
+\end{align*}
+$$
+
+**C(l,r,n), 求 [l, r] 中和 n 互质的数量 $O(\sqrt(n))$**
+
+$$
+\begin{align*}
+C(l,r,n)
+&=\sum_{d\mid n}\mu(d)
+\left(
+\left\lfloor\frac{r}{d}\right\rfloor
+-\left\lfloor\frac{l-1}{d}\right\rfloor
+\right)
+\end{align*}
+$$
+
+**$\gcd=g$ 的数对数量**
+
+定义 $f(x)\to\gcd(a_i,a_j)=x$ 的数对数量
+
+定义 $g(y)\to y\mid\gcd(a_i,a_j)$ 的数对数量
+
+$$
+\begin{align*}
+g(y)=\sum_{y\mid x}f(x)
+\xrightarrow{\text{反演}}
+f(y)=\sum_{y\mid x}\mu\left(\frac{x}{y}\right)g(x)
+\end{align*}
+$$
+
+{% note info simple %} **提示：** 若 $g=\gcd(x,y)$，则 $d\mid g\Longleftrightarrow d\mid x\land d\mid y$。 {% endnote %}
 
 ### 卷积
 
@@ -1671,6 +1740,8 @@ vector<vector<Point>> triangulate(const vector<Point>& p){
 }
 ```
 
+<div style="page-break-after:always"></div>
+
 ## 数据结构
 
 ### 树状数组
@@ -1883,6 +1954,7 @@ struct SegTree{
 ```cpp
 struct SegTree{
     int n;
+    vector<ll> a;
     vector<ll> info; // 区间和
 
     #define lp (p << 1)
@@ -1895,22 +1967,22 @@ struct SegTree{
         info = vector<ll>(n+1 << 2);
     }
     void init(int n_, const vector<ll>& a_){
-        n = n_;
+        n = n_; a = a_;
         info = vector<ll>(n+1 << 2);
-        build(1, 0, n, a_);
+        build(1, 0, n);
     }
 
     void pull(int p){
         info[p] = info[lp] + info[rp];
     }
-    void build(int p, int l, int r, const vector<ll>& a_){
+    void build(int p, int l, int r){
         if(l == r){
-            info[p] = a_[l];
+            info[p] = a[l];
             return;
         }
         int mid = l + r >> 1;
-        build(lp, l, mid, a_);
-        build(rp, mid+1, r, a_);
+        build(lp, l, mid);
+        build(rp, mid+1, r);
         pull(p);
     }
 
